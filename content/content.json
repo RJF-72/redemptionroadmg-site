@@ -1,0 +1,45 @@
+{
+  "hero": {
+    "image": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/rrmg-hero.jpg"
+  },
+  "aboutSubtitle": "\"Rooted in faith. Built on grit.\"",
+  "team": [
+    {
+      "name": "Ray Flanary",
+      "role": "Founder & Director",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/ray-flanary.jpg"
+    },
+    {
+      "name": "Joni Flanary",
+      "role": "CEO",
+      "photo": ""
+    },
+    {
+      "name": "Keith Sproles",
+      "role": "COO",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/keith-sproles.jpg"
+    },
+    {
+      "name": "Paige Sproles",
+      "role": "Director of Talent Development",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/paige-sproles.jpg"
+    }
+  ],
+  "artists": [
+    {
+      "name": "Ray Flanary",
+      "role": "Founder & Artist",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/ray-flanary.jpg"
+    },
+    {
+      "name": "Keith Sproles",
+      "role": "Artist & Producer",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/keith-sproles.jpg"
+    },
+    {
+      "name": "Paige Sproles",
+      "role": "Artist & Songwriter",
+      "photo": "https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/paige-sproles.jpg"
+    }
+  ]
+}
