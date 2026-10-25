@@ -321,6 +321,42 @@
             font-size: 0.85rem;
         }
 
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .family-card {
+            display: block;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .family-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        .family-card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .family-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         footer {
             background: var(--bg-secondary);
             padding: 2.5rem;
@@ -856,7 +892,7 @@
             <li><a href="#brands">Brands</a></li>
             <li><a href="#roster">Artists</a></li>
             <li><a href="#player">Jukebox</a></li>
-            <li><a href="#" onclick="openGraceGrit(); return false;">Store</a></li>
+            <li><a href="https://store.redemptionroadmg.com">Store</a></li>
             <li><a href="#" onclick="openAdminLogin(); return false;" style="color: var(--gold);">Owner Login</a></li>
         </ul>
     </nav>
@@ -927,6 +963,25 @@
         <h2 class="section-title">Artist Roster</h2>
         <p class="section-subtitle">Talented voices of Redemption Road</p>
         <div class="roster-grid" id="rosterGrid"></div>
+    </section>
+
+    <section id="family">
+        <h2 class="section-title">The Redemption Road Family</h2>
+        <p class="section-subtitle">One road, many stops — visit the rest of the family</p>
+        <div class="family-grid">
+            <a class="family-card" href="https://store.redemptionroadmg.com">
+                <h3>Grit &amp; Grace Mercantile</h3>
+                <p>The store — books, music, guitars &amp; software</p>
+            </a>
+            <a class="family-card" href="https://pilot.redemptionroadmg.com">
+                <h3>SoundScape Pilot</h3>
+                <p>The self-hosted music-industry command center</p>
+            </a>
+            <a class="family-card" href="https://fixit.redemptionroadmg.com">
+                <h3>FixIt</h3>
+                <p>See it. Ask it. Fix it. — AI visual troubleshooting</p>
+            </a>
+        </div>
     </section>
 
     <footer>
