@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redemption Road Music Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;700&family=Merriweather:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #08080f;
+            --bg-secondary: #0f0f1a;
+            --bg-card: #14141f;
+            --bg-card-hover: #1c1c2e;
+            --gold: #d4a853;
+            --gold-light: #f0dca0;
+            --gold-glow: rgba(212, 168, 83, 0.15);
+            --accent: #7c5cff;
+            --accent-glow: rgba(124, 92, 255, 0.2);
+            --text-primary: #f0ece6;
+            --text-secondary: #9a9490;
+            --text-muted: #5c5855;
+            --border: rgba(212, 168, 83, 0.15);
+            --border-light: rgba(212, 168, 83, 0.3);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Merriweather', serif;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(8, 8, 15, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.85rem 5%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 3px;
+        }
+        .nav-brand img { height: 54px; width: auto; display: block; }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: 'Oswald', sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            transition: all var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+            background: var(--gold-glow);
+        }
+
+        #home { min-height: 100vh; background-image: url('https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/rrmg-hero.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: var(--bg-primary); position: relative; }
+
+        #home::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(transparent, var(--bg-primary));
+            pointer-events: none;
+        }
+
+        section {
+            padding: 5rem 10%;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0.75rem auto 0;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: 'Merriweather', serif;
+            font-style: italic;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            font-size: 1.05rem;
+        }
+
+        #about {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        #about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        .team-member:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-light);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        .team-member img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .team-member-info {
+            padding: 1.5rem;
+        }
+
+        .team-member-info h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.15rem;
+            margin-bottom: 0.35rem;
+        }
+        .team-member-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        #brands {
+            background: var(--bg-primary);
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .brand-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition);
+            height: 300px;
+        }
+
+        .brand-art { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 5rem; background: radial-gradient(circle at 50% 35%, rgba(212,168,83,0.22), rgba(8,8,15,0.95) 72%); transition: transform 0.5s ease; }
+        .brand-card:hover .brand-art { transform: scale(1.05); }
+        .photo-placeholder { width: 100%; height: 300px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 4.5rem; font-weight: 700; color: var(--gold); background: radial-gradient(circle at 50% 35%, rgba(212,168,83,0.16), rgba(8,8,15,0.95) 75%); }
+        .artist-card .photo-placeholder { height: 350px; }
+        .hero-player-art { width: 100%; padding: 4rem 2rem; display: flex; align-items: center; justify-content: center; font-size: 5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); background: radial-gradient(circle at 50% 40%, rgba(212,168,83,0.2), rgba(8,8,15,0.95) 75%); }
+
+        .brand-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-light);
+            box-shadow: 0 12px 40px var(--gold-glow);
+        }
+
+        .brand-card:hover img {
+            transform: scale(1.08);
+        }
+        
+        .brand-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(8, 8, 15, 0.95) 40%);
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            transform: translateY(30%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand-card:hover .brand-overlay {
+            transform: translateY(0);
+        }
+
+        .brand-overlay h3 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+        }
+        .brand-overlay p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        #roster {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        #roster::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+        }
+
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .roster-grid .artist-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            text-align: center;
+            transition: all var(--transition);
+        }
+
+        .roster-grid .artist-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-light);
+            box-shadow: 0 8px 30px var(--gold-glow);
+        }
+
+        .roster-grid .artist-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .roster-grid .artist-info {
+            padding: 1.5rem;
+        }
+
+        .roster-grid .artist-info h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 0.35rem;
+        }
+
+        .roster-grid .artist-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            background: var(--bg-secondary);
+            padding: 2.5rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer strong {
+            color: var(--gold);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            margin: 4% auto;
+            padding: 28px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            position: relative;
+            text-align: center;
+            box-shadow: var(--shadow), 0 0 60px var(--gold-glow);
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .modal-close {
+            color: var(--text-muted);
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: normal;
+            cursor: pointer;
+            transition: color var(--transition);
+            line-height: 1;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: var(--gold);
+        }
+
+        #modal-title {
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            margin: 1rem 0;
+        }
+
+        .store-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .store-tab {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 7px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            transition: all var(--transition);
+        }
+
+        .store-tab.active, .store-tab:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--bg-primary);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 6px;
+        }
+
+        .products-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        .products-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .products-grid::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 14px;
+            text-align: center;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+            box-shadow: 0 8px 25px var(--gold-glow);
+        }
+
+        .product-card.bundle {
+            border-color: var(--gold);
+            background: linear-gradient(180deg, var(--bg-card), rgba(212, 168, 83, 0.06));
+        }
+
+        .product-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .product-info h3 {
+            color: var(--gold-light);
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .product-info p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .product-original-price {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-right: 6px;
+        }
+
+        .bundle-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--bg-primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .artist-card {
+            text-align: left !important;
+            border-color: var(--border-light) !important;
+            background: var(--bg-card) !important;
+        }
+
+        .streaming-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stream-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--gold-glow);
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+        }
+
+        .stream-link:hover {
+            background: var(--gold);
+            color: var(--bg-primary);
+            transform: scale(1.15);
+        }
+
+        .artist-catalog {
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+
+        .catalog-item {
+            display: block;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all var(--transition);
+        }
+
+        .catalog-item:hover {
+            background: var(--gold-glow);
+            color: var(--gold-light);
+        }
+
+        .catalog-type {
+            color: var(--gold);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            margin-left: 6px;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-player-section {
+            padding: 3rem 5%;
+            background: var(--bg-secondary);
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-player-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .hero-player-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .hero-player-controls {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(8, 8, 15, 0.85);
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-ctrl-btn {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all var(--transition);
+        }
+
+        .hero-ctrl-btn:hover {
+            background: var(--gold-glow);
+            color: var(--gold);
+            border-color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .hero-ctrl-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hero-ctrl-btn.play-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #1a3d17, #2d5a27);
+            border-color: rgba(99, 179, 84, 0.4);
+            color: #63b354;
+        }
+
+        .hero-now-playing {
+            position: absolute;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(8, 8, 15, 0.85);
+            padding: 8px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            text-align: center;
+            min-width: 200px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .hero-now-playing.visible {
+            opacity: 1;
+        }
+
+        .hero-now-playing .np-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .hero-now-playing .np-artist {
+            font-family: 'Merriweather', serif;
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        .playlist-panel {
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+        }
+
+        .playlist-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .playlist-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .playlist-panel::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .playlist-item:last-child {
+            border-bottom: none;
+        }
+
+        .playlist-item:hover {
+            background: var(--gold-glow);
+        }
+
+        .playlist-item.active {
+            background: var(--gold-glow);
+            border-left: 3px solid var(--gold);
+        }
+
+        .playlist-item img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .playlist-item-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .playlist-item-title {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .playlist-item-artist {
+            font-size: 0.78rem;
+            color: var(--gold);
+        }
+
+        .buy-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gold), #b8923f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        .buy-btn:active {
+            transform: translateY(0);
+        }
+
+        .store-btn-co {
+            display: inline-block;
+            padding: 8px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all var(--transition);
+        }
+
+        .store-btn-co:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-glow);
+        }
+
+        #checkoutModal .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        #checkoutModal .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        #checkoutModal .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #checkoutModal .modal-content::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.7rem 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            section {
+                padding: 3rem 5%;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .brands-grid { grid-template-columns: 1fr; }
+            .brand-card { height: 240px; }
+            .hero-player-controls {
+                bottom: 15px;
+                gap: 6px;
+                padding: 8px 12px;
+            }
+            .hero-ctrl-btn { width: 36px; height: 36px; font-size: 13px; }
+            .hero-ctrl-btn.play-btn { width: 44px; height: 44px; }
+            .hero-now-playing { bottom: 75px; min-width: 140px; padding: 6px 16px; }
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                width: 95%;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-brand"><img src="https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/images/rrmg-logo.png" alt="Redemption Road Music Group"></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#brands">Brands</a></li>
+            <li><a href="#roster">Artists</a></li>
+            <li><a href="#player">Jukebox</a></li>
+            <li><a href="#" onclick="openGraceGrit(); return false;">Store</a></li>
+            <li><a href="#" onclick="openAdminLogin(); return false;" style="color: var(--gold);">Owner Login</a></li>
+        </ul>
+    </nav>
+
+    <section id="home"></section>
+
+    <section class="hero-player-section" id="player">
+        <div class="hero-player-container">
+            <div class="hero-player-art">🎵</div>
+            
+            <div class="hero-now-playing" id="nowPlaying">
+                <div class="np-title" id="npTitle">-</div>
+                <div class="np-artist" id="npArtist">-</div>
+            </div>
+            
+            <div class="hero-player-controls">
+                <button class="hero-ctrl-btn" onclick="prevTrack()" title="Previous">⏮</button>
+                <button class="hero-ctrl-btn play-btn" id="playPauseBtn" onclick="togglePlay()" title="Play/Pause">▶</button>
+                <button class="hero-ctrl-btn" onclick="stopAudio()" title="Stop">⏹</button>
+                <button class="hero-ctrl-btn" onclick="nextTrack()" title="Next">⏭</button>
+            </div>
+            
+            <div class="playlist-panel" id="playlistPanel">
+                <h3 style="color: var(--gold); margin-bottom: 10px; font-family: 'Cinzel', serif;">Releases</h3>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">About Us</h2>
+        <p class="section-subtitle" id="aboutSubtitle">"Rooted in faith. Built on grit."</p>
+        <div class="about-grid" id="teamGrid"></div>
+    </section>
+
+    <section id="brands">
+        <h2 class="section-title">Our Brands</h2>
+        <p class="section-subtitle">Click a brand to explore products</p>
+        
+        <div class="brands-grid">
+            <div class="brand-card" onclick="openBrandStore('grace-grit')">
+                <div class="brand-art">🛍️</div>
+                <div class="brand-overlay"><h3>Grace & Grit</h3><p>Mercantile</p></div>
+            </div>
+
+            <div class="brand-card" onclick="openBrandStore('neon-church')">
+                <div class="brand-art">📖</div>
+                <div class="brand-overlay"><h3>Neon Church</h3><p>Publishing</p></div>
+            </div>
+
+            <div class="brand-card" onclick="openBrandStore('redemption-records')">
+                <div class="brand-art">💿</div>
+                <div class="brand-overlay"><h3>Redemption Road</h3><p>Records</p></div>
+            </div>
+
+            <div class="brand-card" onclick="openBrandStore('artist-roster')">
+                <div class="brand-art">🎤</div>
+                <div class="brand-overlay"><h3>Artist Roster</h3><p>Music & Talent</p></div>
+            </div>
+
+            <div class="brand-card" onclick="openBrandStore('about')">
+                <div class="brand-art">✨</div>
+                <div class="brand-overlay"><h3>About</h3><p>Our Story</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="roster">
+        <h2 class="section-title">Artist Roster</h2>
+        <p class="section-subtitle">Talented voices of Redemption Road</p>
+        <div class="roster-grid" id="rosterGrid"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 <strong>Redemption Road Music Group</strong>. All rights reserved.</p>
+        <p style="margin-top:5px; font-size:0.7rem;">"Let the redeemed of the Lord say so." - Psalm 107:2</p>
+    </footer>
+
+    <div id="brandModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Brand Logo">
+            <h2 id="modal-title">Brand Name</h2>
+            <p id="modal-desc">Description goes here.</p>
+        </div>
+    </div>
+
+    <div id="brandStoreModal" class="modal">
+        <div class="modal-content" style="max-width:1100px;width:95%;">
+            <span class="modal-close" onclick="closeBrandStore()">&times;</span>
+            <div style="display:flex;align-items:center;gap:15px;margin-bottom:10px">
+                
+                <div>
+                    <h2 id="brandStoreTitle" style="color:var(--gold);font-family:'Cinzel',serif"></h2>
+                    <p id="brandStoreDesc" style="color:#888;font-size:0.9rem"></p>
+                </div>
+            </div>
+
+            <div class="store-tabs" id="brandStoreTabs"></div>
+
+            <div class="products-grid" id="brandProductsGrid"></div>
+
+            <div style="margin-top:15px;text-align:center">
+                <button onclick="openAdminLogin()" style="background:transparent;border:1px solid #555;color:#888;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:0.75rem">Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content" style="max-width:420px">
+            <span class="modal-close" onclick="closeAdminLogin()">&times;</span>
+            <h2 style="color:var(--gold);font-family:'Cinzel',serif;margin-bottom:1rem">Owner Login</h2>
+            <input type="password" id="adminPasswordInput" placeholder="Enter owner password" style="width:100%;padding:12px;border:1px solid var(--gold);border-radius:6px;background:#1a120b;color:#fff;font-size:1rem;margin-bottom:1rem">
+            <button onclick="verifyAdminPassword()" class="buy-btn" style="width:100%">Login</button>
+            <p id="adminLoginError" style="color:#ef4444;margin-top:0.5rem;font-size:0.85rem;display:none"></p>
+        </div>
+    </div>
+
+    <div id="adminPanelModal" class="modal">
+        <div class="modal-content" style="max-width:800px;width:90%;max-height:90vh;overflow-y:auto">
+            <span class="modal-close" onclick="closeAdminPanel()">&times;</span>
+            <h2 style="color:var(--gold);font-family:'Cinzel',serif;margin-bottom:0.5rem"><i class="fas fa-crown"></i> Owner Dashboard</h2>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1rem">Manage your music, photos, and site content. Changes publish to the live site for everyone.</p>
+        <div class="cms-tabs">
+            <button class="cms-tab-btn active" onclick="cmsTab('products', this)">Products</button>
+            <button class="cms-tab-btn" onclick="cmsTab('music', this)">&#127925; Music</button>
+            <button class="cms-tab-btn" onclick="cmsTab('photos', this)">&#128247; Photos</button>
+            <button class="cms-tab-btn" onclick="cmsTab('text', this)">&#9998;&#65039; Site Text</button>
+            <button class="cms-tab-btn" onclick="cmsTab('settings', this)">&#9881;&#65039; Settings</button>
+        </div>
+        <div id="cms-tab-products" class="cms-tab" style="display:block;">
+
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem">
+                <h3 style="color:var(--gold-light);margin-bottom:1rem">Add New Product</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <input id="ap-name" placeholder="Product name" style="padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary)">
+                    <input id="ap-brand" placeholder="Brand ID (e.g. grace-grit, neon-church)" style="padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary)">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+                    <input id="ap-price" placeholder="Price (e.g. $29.99)" style="padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary)">
+                    <select id="ap-type" style="padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary)">
+                        <option value="product">Product</option>
+                        <option value="bundle">Bundle</option>
+                        <option value="artist">Artist</option>
+                    </select>
+                </div>
+                <div style="margin-top:10px">
+                    <input id="ap-icon" placeholder="Emoji (e.g. 🎸)" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary)">
+                </div>
+                <textarea id="ap-desc" placeholder="Description" style="width:100%;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary);min-height:60px"></textarea>
+                <button onclick="addAdminProduct()" class="buy-btn" style="margin-top:10px">Add Product</button>
+            </div>
+
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">Current Products</h3>
+            <div id="adminProductList"></div></div>
+        <div id="cms-tab-music" class="cms-tab">
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#127925; Jukebox Tracks</h3>
+            <p class="cms-hint">Add your songs below. Upload an MP3 or paste a link, then hit <b>Save Music to Site</b> to publish.</p>
+            <div id="cmsTrackList" style="margin:1rem 0"></div>
+            <div class="cms-row">
+                <input type="text" id="cms-new-title" placeholder="Song title">
+                <input type="text" id="cms-new-artist" placeholder="Artist">
+            </div>
+            <div class="cms-row">
+                <input type="file" id="cms-new-file" accept="audio/*">
+                <input type="text" id="cms-new-url" placeholder="...or paste MP3 URL">
+                <button class="cms-mini" onclick="cmsAddTrack()">Add</button>
+            </div>
+            <button class="cms-save" onclick="cmsSaveMusic()">Save Music to Site</button>
+            <div class="cms-status" id="cms-music-status"></div>
+        </div>
+        <div id="cms-tab-photos" class="cms-tab">
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#128247; Team</h3>
+            <div id="cmsTeamList"></div>
+            <button class="cms-mini" onclick="cmsAddPerson('team')">+ Add team member</button>
+            <h3 style="color:var(--gold-light);margin:1.2rem 0 0.5rem">&#128247; Artists</h3>
+            <div id="cmsArtistList"></div>
+            <button class="cms-mini" onclick="cmsAddPerson('artists')">+ Add artist</button>
+            <div><button class="cms-save" onclick="cmsSavePhotos()">Save Photos to Site</button></div>
+            <div class="cms-status" id="cms-photos-status"></div>
+        </div>
+        <div id="cms-tab-text" class="cms-tab">
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#9998;&#65039; Site Text &amp; Hero</h3>
+            <p class="cms-hint">About subtitle</p>
+            <input type="text" id="cms-about-subtitle" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:4px;background:var(--bg-primary);color:var(--text-primary);margin-bottom:1rem">
+            <p class="cms-hint">Hero header image</p>
+            <img id="cms-hero-preview" style="max-width:100%;border-radius:8px;margin-bottom:0.5rem;display:none">
+            <div class="cms-row">
+                <input type="file" id="cms-hero-file" accept="image/*">
+                <input type="text" id="cms-hero-url" placeholder="...or paste image URL">
+                <button class="cms-mini" onclick="cmsClearHero()">Clear</button>
+            </div>
+            <button class="cms-save" onclick="cmsSaveText()">Save Text to Site</button>
+            <div class="cms-status" id="cms-text-status"></div>
+        </div>
+        <div id="cms-tab-settings" class="cms-tab">
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#9881;&#65039; GitHub Connection</h3>
+            <p class="cms-hint">Your changes are saved to your website&apos;s GitHub repo. Create a token once and paste it here &mdash; it stays in this browser only, never in the site code.</p>
+            <div class="cms-row">
+                <input type="password" id="cms-pat" placeholder="github_pat_...">
+                <button class="cms-mini" onclick="cmsSavePat()">Save</button>
+                <button class="cms-mini" onclick="cmsTestPat()">Test</button>
+            </div>
+            <div class="cms-status" id="cms-settings-status"></div>
+            <ol class="cms-hint" style="margin-top:1rem;padding-left:1.2rem">
+                <li>On GitHub: Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens</li>
+                <li>Generate new token &rarr; Repository access: <b>Only select repositories</b> &rarr; pick <b>redemptionroadmg-site</b></li>
+                <li>Permissions: <b>Contents</b> &rarr; Read and write. Generate it, copy, paste above, Save.</li>
+            </ol>
+        </div></div></div>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content" style="max-width:500px;text-align:left">
+            <span class="modal-close" onclick="closeCheckout()">&times;</span>
+            <div id="checkoutProductDisplay" style="text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
+                <div id="checkoutIcon" style="font-size:3rem;margin-bottom:8px"></div>
+                <h2 id="checkoutTitle" style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.3rem"></h2>
+                <p id="checkoutDesc" style="color:var(--text-secondary);font-size:0.85rem;margin:6px 0"></p>
+                <div id="checkoutPrice" style="color:var(--gold);font-size:1.5rem;font-weight:700;margin-top:8px"></div>
+            </div>
+
+            <div id="checkoutOwnerSection" style="display:none;background:var(--gold-glow);border:1px solid var(--gold);border-radius:8px;padding:20px;margin-bottom:16px;text-align:center">
+                <div style="font-size:2.5rem;margin-bottom:8px">👑</div>
+                <h3 style="color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;margin-bottom:6px">Owner Access</h3>
+                <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px">You own this product. No license or purchase is required.</p>
+                <button onclick="grantOwnerAccess()" class="buy-btn" style="width:100%"><i class="fas fa-unlock"></i> Claim Owner Access</button>
+            </div>
+
+            <div id="checkoutOwnerResult" style="display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:16px;margin-bottom:16px;text-align:center">
+                <i class="fas fa-check-circle" style="color:#22c55e;font-size:2rem;margin-bottom:8px;display:block"></i>
+                <p style="color:#22c55e;font-weight:600;margin-bottom:4px">Owner Access Granted!</p>
+                <p id="checkoutOwnerKey" style="color:var(--gold);font-family:monospace;font-size:1.1rem;padding:8px;background:var(--bg-primary);border-radius:4px;margin:8px 0;word-break:break-all"></p>
+                <p style="color:var(--text-secondary);font-size:0.75rem">This product is unlocked for your account.</p>
+            </div>
+
+            <div id="checkoutPurchaseSection">
+                <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;text-align:center">Purchase from one of our authorized stores:</p>
+                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+                    <a id="storePayhip" href="#" target="_blank" class="store-btn-co">Payhip</a>
+                    <a id="storeGumroad" href="#" target="_blank" class="store-btn-co">Gumroad</a>
+                    <a id="storeLemonSqueezy" href="#" target="_blank" class="store-btn-co">LemonSqueezy</a>
+                </div>
+
+                <div style="text-align:center;margin:16px 0;color:var(--text-muted);font-size:0.8rem">&mdash; or &mdash;</div>
+
+                <div id="checkoutDemoSection" style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px">
+                    <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:10px;text-align:center"><i class="fas fa-flask"></i> Generate a demo license for local testing:</p>
+                    <input type="email" id="checkoutEmail" placeholder="Your email address" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-primary);color:var(--text-primary);font-size:0.9rem;margin-bottom:10px">
+                    <button onclick="generateDemoLicense()" class="buy-btn" style="width:100%"><i class="fas fa-key"></i> Generate Demo License</button>
+                </div>
+
+                <div id="checkoutLicenseResult" style="display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:16px;margin-bottom:16px;text-align:center">
+                    <i class="fas fa-check-circle" style="color:#22c55e;font-size:2rem;margin-bottom:8px;display:block"></i>
+                    <p style="color:#22c55e;font-weight:600;margin-bottom:4px">License Generated!</p>
+                    <p id="checkoutLicenseKey" style="color:var(--gold);font-family:monospace;font-size:1.1rem;padding:8px;background:var(--bg-primary);border-radius:4px;margin:8px 0;word-break:break-all"></p>
+                    <p style="color:var(--text-secondary);font-size:0.75rem">Enter this key in the app to activate your product.</p>
+                </div>
+            </div>
+
+            <div id="checkoutLicenseHistory" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+                <p style="color:var(--text-muted);font-size:0.75rem;margin-bottom:8px;cursor:pointer" onclick="toggleLicenseHistory()"><i class="fas fa-chevron-right" id="licenseHistoryChevron"></i> Your Licenses (<span id="licenseCount">0</span>)</p>
+                <div id="licenseHistoryList" style="display:none;max-height:150px;overflow-y:auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.5/dist/jsmediatags.min.js"></script>
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const npTitle = document.getElementById('npTitle');
+        const npArtist = document.getElementById('npArtist');
+        const nowPlaying = document.getElementById('nowPlaying');
+        const playlistPanel = document.getElementById('playlistPanel');
+
+        let playlist = [];
+        let currentIndex = -1;
+        let isPlaying = false;
+
+        const isFileProtocol = window.location.protocol === 'file:';
+
+        async function fetchPlaylist() {
+            if (isFileProtocol) {
+                playlistPanel.innerHTML = '<h3 style="color:var(--gold);margin-bottom:10px;font-family:\'Cinzel\',serif;">Releases</h3><p style="color:#888;padding:1rem;text-align:center">Serve the site with a web server to enable the jukebox.<br>Try: <code style="background:#333;padding:2px 6px;border-radius:4px">npx serve .</code></p>';
+                return;
+            }
+            try {
+                const res = await fetch('https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/content/playlist.json?t=' + Date.now());
+                if (res.ok) {
+                    playlist = await res.json();
+                    renderPlaylist();
+                    if (currentIndex === -1 && playlist.length > 0) {
+                        currentIndex = 0;
+                        loadTrack(currentIndex);
+                    }
+                }
+            } catch (e) {
+                playlist = [];
+                renderPlaylist();
+            }
+        }
+
+
+
+        
+
+        function renderPlaylist() {
+            const header = playlistPanel.querySelector('h3');
+            playlistPanel.innerHTML = '';
+            playlistPanel.appendChild(header);
+            
+            playlist.forEach((song, idx) => {
+                const div = document.createElement('div');
+                div.className = 'playlist-item' + (idx === currentIndex ? ' active' : '');
+                div.onclick = () => { playTrack(idx); };
+                
+                if (song.cover_art) {
+                    const img = document.createElement('img');
+                    img.src = song.cover_art;
+                    img.onerror = () => { img.style.display = 'none'; };
+                    div.appendChild(img);
+                } else {
+                    const fb = document.createElement('div');
+                    fb.className = 'playlist-item-art-fallback';
+                    fb.textContent = '\uD83C\uDFB5';
+                    div.appendChild(fb);
+                }
+                
+                const info = document.createElement('div');
+                info.className = 'playlist-item-info';
+                info.innerHTML = `
+                    <div class="playlist-item-title">${song.title}</div>
+                    <div class="playlist-item-artist">${song.artist}</div>
+                `;
+                div.appendChild(info);
+                playlistPanel.appendChild(div);
+            });
+            if (playlist.length === 0) {
+                const empty = document.createElement('p');
+                empty.style.cssText = 'color:#888;padding:1rem;text-align:center';
+                empty.textContent = 'No releases yet \u2014 check back soon.';
+                playlistPanel.appendChild(empty);
+            }
+        }
+
+        function loadTrack(index) {
+            if (index < 0 || index >= playlist.length) return;
+            const song = playlist[index];
+            npTitle.textContent = song.title;
+            npArtist.textContent = song.artist;
+            nowPlaying.classList.add('visible');
+            
+            audio.src = song.stream_url;
+            
+            renderPlaylist();
+        }
+
+        function playTrack(index) {
+            if (index < 0 || index >= playlist.length) return;
+            currentIndex = index;
+            loadTrack(currentIndex);
+            audio.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.textContent = '⏸';
+            }).catch(e => console.error('Playback error:', e));
+        }
+
+        function togglePlay() {
+            if (playlist.length === 0) return;
+            if (currentIndex === -1) {
+                playTrack(0);
+                return;
+            }
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                playPauseBtn.textContent = '▶';
+            } else {
+                audio.play();
+                isPlaying = true;
+                playPauseBtn.textContent = '⏸';
+            }
+        }
+
+        function prevTrack() {
+            if (playlist.length === 0) return;
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            playTrack(currentIndex);
+        }
+
+        function nextTrack() {
+            if (playlist.length === 0) return;
+            currentIndex = (currentIndex + 1) % playlist.length;
+            playTrack(currentIndex);
+        }
+
+        function stopAudio() {
+            audio.pause();
+            audio.currentTime = 0;
+            isPlaying = false;
+            playPauseBtn.textContent = '▶';
+            nowPlaying.classList.remove('visible');
+        }
+
+        audio.addEventListener('ended', () => {
+            nextTrack();
+        });
+
+        function openModal(imgSrc, title, desc) {
+            const modal = document.getElementById('brandModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            modalImg.src = imgSrc;
+            modalTitle.textContent = title;
+            modalDesc.textContent = desc;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('brandModal');
+            modal.style.display = 'none';
+        }
+
+        // --- Brand Store System ---
+        const BRANDS = {'grace-grit': {
+                name: 'Grace & Grit Mercantile',
+                desc: 'Honoring heritage with rugged, faith-centered apparel and goods.',
+                products: []
+            },
+            'neon-church': {
+                name: 'Neon Church Publishing',
+                desc: 'Illuminating the Word through modern, vibrant publishing.',
+                products: []
+            },'redemption-records': {
+                name: 'Redemption Road Records',
+                desc: 'Stream, follow, and explore the catalog of every Redemption Road artist.',
+                products: [
+                    {
+                        id: "artist_ray_flanary",
+                        name: "Ray Flanary",
+                        description: "Founder & Artist • Redemption Road Music Group",
+                        icon: "🎤",
+                        type: "artist",
+                        streaming: {
+                            spotify: "https://open.spotify.com/artist/",
+                            appleMusic: "https://music.apple.com/artist/",
+                            youtube: "https://youtube.com/@",
+                            amazonMusic: "https://music.amazon.com/artists/"
+                        },
+                        catalog: [
+                            { title: "Redemption Road", type: "Single", url: "https://open.spotify.com/track/" }
+                        ]
+                    },
+                    {
+                        id: "artist_keith_sproles",
+                        name: "Keith Sproles",
+                        description: "Artist & Producer • Redemption Road Music Group",
+                        icon: "🎹",
+                        type: "artist",
+                        streaming: {
+                            spotify: "https://open.spotify.com/artist/",
+                            appleMusic: "https://music.apple.com/artist/",
+                            youtube: "https://youtube.com/@",
+                            amazonMusic: "https://music.amazon.com/artists/"
+                        },
+                        catalog: [
+                            { title: "Coming Soon", type: "Single", url: "#" }
+                        ]
+                    },
+                    {
+                        id: "artist_paige_sproles",
+                        name: "Paige Sproles",
+                        description: "Artist & Songwriter • Redemption Road Music Group",
+                        icon: "🎸",
+                        type: "artist",
+                        streaming: {
+                            spotify: "https://open.spotify.com/artist/",
+                            appleMusic: "https://music.apple.com/artist/",
+                            youtube: "https://youtube.com/@",
+                            amazonMusic: "https://music.amazon.com/artists/"
+                        },
+                        catalog: [
+                            { title: "Coming Soon", type: "Single", url: "#" }
+                        ]
+                    }
+                ]
+            },
+            'artist-roster': {
+                name: 'Artist Roster',
+                desc: 'Meet the talented voices of Redemption Road.',
+                products: []
+            },
+            'about': {
+                name: 'About Us',
+                desc: 'Meet the team behind Redemption Road Music Group.',
+                products: []
+            }
+        };
+
+        let currentBrandId = null;
+        let currentBrandFilter = 'all';
+
+        function openBrandStore(brandId) {
+            currentBrandId = brandId;
+            const brand = BRANDS[brandId];
+            if (!brand) return;
+
+            const modal = document.getElementById('brandStoreModal');
+            
+            document.getElementById('brandStoreTitle').textContent = brand.name;
+            document.getElementById('brandStoreDesc').textContent = brand.desc;
+
+            // Build filter tabs
+            const tabsContainer = document.getElementById('brandStoreTabs');
+            const types = [...new Set(brand.products.map(p => p.badge || 'all'))];
+            if (brand.products.length > 0 && types.length > 0) {
+                tabsContainer.innerHTML = `<button class="store-tab active" onclick="setBrandFilter('all', this)">All</button>` +
+                    types.map(t => `<button class="store-tab" onclick="setBrandFilter('${t}', this)">${t}</button>`).join('');
+            } else {
+                tabsContainer.innerHTML = '';
+            }
+
+            currentBrandFilter = 'all';
+            renderBrandProducts();
+            modal.style.display = 'block';
+        }
+
+        function closeBrandStore() {
+            document.getElementById('brandStoreModal').style.display = 'none';
+        }
+
+        function setBrandFilter(filter, el) {
+            currentBrandFilter = filter;
+            document.querySelectorAll('#brandStoreTabs .store-tab').forEach(btn => btn.classList.remove('active'));
+            el?.classList.add('active');
+            renderBrandProducts();
+        }
+
+        function renderBrandProducts() {
+            const grid = document.getElementById('brandProductsGrid');
+            const brand = BRANDS[currentBrandId];
+            if (!brand) { grid.innerHTML = ''; return; }
+
+            const custom = loadCustomProducts().filter(p => p.brand === currentBrandId);
+            const allItems = [...brand.products, ...custom];
+
+            const filtered = currentBrandFilter === 'all'
+                ? allItems
+                : allItems.filter(p => (p.badge || 'all') === currentBrandFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="color:#888;text-align:center;padding:2rem">No products yet. Owners can add products via Admin.</p>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(product => {
+                if (product.type === 'artist') {
+                    const streamLinks = product.streaming ? Object.entries(product.streaming).map(([platform, url]) =>
+                        `<a href="${url}" target="_blank" class="stream-link" title="${platform}"><i class="fab fa-${platform === 'appleMusic' ? 'apple' : platform === 'amazonMusic' ? 'amazon' : platform}"></i></a>`
+                    ).join('') : '';
+                    const catalogItems = (product.catalog || []).map(c =>
+                        `<a href="${c.url}" target="_blank" class="catalog-item">${c.title} <span class="catalog-type">${c.type}</span></a>`
+                    ).join('') || '<span style="color:#666;font-size:0.85rem">No releases yet</span>';
+                    return `
+                        <div class="product-card artist-card">
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                                <span style="font-size:2.5rem">${product.icon || '🎤'}</span>
+                                <div>
+                                    <h3 style="color:var(--gold-light);font-size:1.2rem">${product.name}</h3>
+                                    <p style="color:#888;font-size:0.85rem">${product.description || ''}</p>
+                                </div>
+                            </div>
+                            <div class="streaming-links" style="margin-bottom:10px">${streamLinks}</div>
+                            <div class="artist-catalog">
+                                <strong style="color:var(--gold);font-size:0.8rem;display:block;margin-bottom:4px">Catalog</strong>
+                                ${catalogItems}
+                            </div>
+                        </div>
+                    `;
+                }
+                const badgeHtml = product.badge ? `<span class="bundle-badge">${product.badge}</span>` : '';
+                return `
+                    <div class="product-card">
+                        <div>
+                            ${badgeHtml}
+                            <div class="product-icon">${product.icon || '📦'}</div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <p>${product.description || ''}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="product-price">${product.price}</div>
+                            <button class="buy-btn" onclick="buyBrandProduct('${currentBrandId}', '${product.id}')">Buy Now</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyBrandProduct(brandId, productId) {
+            const brand = BRANDS[brandId];
+            const custom = loadCustomProducts().filter(p => p.brand === brandId);
+            const allItems = [...brand.products, ...custom];
+            const product = allItems.find(p => p.id === productId);
+            if (!product) return;
+
+            if (product.type === 'artist') {
+                if (product.streaming?.spotify) {
+                    window.open(product.streaming.spotify, '_blank');
+                } else if (product.streaming?.youtube) {
+                    window.open(product.streaming.youtube, '_blank');
+                }
+                return;
+            }
+
+            openCheckout(product, brandId);
+        }
+
+        // --- Checkout System ---
+        let checkoutProduct = null;
+        let checkoutBrandId = null;
+
+        function openCheckout(product, brandId) {
+            checkoutProduct = product;
+            checkoutBrandId = brandId;
+
+            document.getElementById('checkoutIcon').textContent = product.icon || '📦';
+            document.getElementById('checkoutTitle').textContent = product.name;
+            document.getElementById('checkoutDesc').textContent = product.description || '';
+            document.getElementById('checkoutPrice').textContent = product.price || '';
+            document.getElementById('checkoutEmail').value = '';
+            document.getElementById('checkoutLicenseResult').style.display = 'none';
+            document.getElementById('checkoutOwnerResult').style.display = 'none';
+
+            // Check if user is logged in as owner
+            const isOwner = !!localStorage.getItem('rrmg_owner_token');
+            if (isOwner) {
+                document.getElementById('checkoutOwnerSection').style.display = 'block';
+                document.getElementById('checkoutPurchaseSection').style.display = 'none';
+            } else {
+                document.getElementById('checkoutOwnerSection').style.display = 'none';
+                document.getElementById('checkoutPurchaseSection').style.display = 'block';
+            }
+
+            // Set store URLs based on brand or product-specific override
+            const storeMap = {
+                'grace-grit': {
+                    payhip: 'https://payhip.com/Texican',
+                    gumroad: 'https://gumroad.com/texican',
+                    lemonsqueezy: 'https://texican.lemonsqueezy.com'
+                },
+                'neon-church': {
+                    payhip: 'https://payhip.com/Texican',
+                    gumroad: 'https://gumroad.com/texican',
+                    lemonsqueezy: 'https://texican.lemonsqueezy.com'
+                }
+            };
+            const stores = storeMap[brandId] || storeMap['grace-grit'];
+            document.getElementById('storePayhip').href = product.payhipUrl || stores.payhip;
+            document.getElementById('storeGumroad').href = product.gumroadUrl || stores.gumroad;
+            document.getElementById('storeLemonSqueezy').href = product.lemonsqueezyUrl || stores.lemonsqueezy;
+
+            renderLicenseHistory();
+            document.getElementById('checkoutModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').style.display = 'none';
+            document.body.style.overflow = '';
+            checkoutProduct = null;
+            checkoutBrandId = null;
+        }
+
+        function generateDemoLicense() {
+            const email = document.getElementById('checkoutEmail').value.trim();
+            if (!email) {
+                alert('Please enter an email address.');
+                return;
+            }
+
+            const product = checkoutProduct;
+            if (!product) return;
+
+            // Generate a unique license key
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const productCode = product.id.substring(0, 4).toUpperCase();
+            const licenseKey = `T7-DEMO-${productCode}-${timestamp}-${random}`;
+
+            // Store the license
+            const licenses = JSON.parse(localStorage.getItem('rrmg_licenses') || '[]');
+            licenses.push({
+                key: licenseKey,
+                productId: product.id,
+                productName: product.name,
+                brandId: checkoutBrandId,
+                email: email,
+                type: 'demo',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('rrmg_licenses', JSON.stringify(licenses));
+
+            // Show result
+            document.getElementById('checkoutLicenseKey').textContent = licenseKey;
+            document.getElementById('checkoutLicenseResult').style.display = 'block';
+            document.getElementById('checkoutPurchaseSection').style.display = 'none';
+            renderLicenseHistory();
+        }
+
+        function grantOwnerAccess() {
+            const product = checkoutProduct;
+            if (!product) return;
+
+            const licenseKey = `T7-OWNER-${product.id.toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+
+            const licenses = JSON.parse(localStorage.getItem('rrmg_licenses') || '[]');
+            licenses.push({
+                key: licenseKey,
+                productId: product.id,
+                productName: product.name,
+                brandId: checkoutBrandId,
+                email: 'owner@redemptionroadmusicgroup.com',
+                type: 'owner',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('rrmg_licenses', JSON.stringify(licenses));
+
+            document.getElementById('checkoutOwnerKey').textContent = licenseKey;
+            document.getElementById('checkoutOwnerResult').style.display = 'block';
+            document.getElementById('checkoutOwnerSection').style.display = 'none';
+            renderLicenseHistory();
+        }
+
+        function loadLicenses() {
+            try { return JSON.parse(localStorage.getItem('rrmg_licenses') || '[]'); } catch { return []; }
+        }
+
+        function renderLicenseHistory() {
+            const list = document.getElementById('licenseHistoryList');
+            const count = document.getElementById('licenseCount');
+            const licenses = loadLicenses();
+            count.textContent = licenses.length;
+
+            if (licenses.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted);font-size:0.8rem;padding:8px;text-align:center">No licenses yet.</p>';
+                return;
+            }
+
+            list.innerHTML = licenses.slice().reverse().map(l => `
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.8rem">
+                    <span style="color:var(--gold);font-family:monospace;font-size:0.7rem;flex:1;word-break:break-all">${l.key}</span>
+                    <span style="color:var(--text-secondary);font-size:0.7rem">${l.productName}</span>
+                    <span style="color:var(--text-muted);font-size:0.65rem">${new Date(l.date).toLocaleDateString()}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleLicenseHistory() {
+            const list = document.getElementById('licenseHistoryList');
+            const chevron = document.getElementById('licenseHistoryChevron');
+            const isVisible = list.style.display !== 'none';
+            list.style.display = isVisible ? 'none' : 'block';
+            chevron.style.transform = isVisible ? '' : 'rotate(90deg)';
+            if (!isVisible) renderLicenseHistory();
+        }
+
+        // Store nav link opens the Mercantile
+        function openGraceGrit() {
+            openBrandStore('grace-grit');
+        }
+
+        // --- Admin panel (owner-only product management) ---
+        const OWNER_HASH = '3e4e463893882afa6b13783bade40c1d207ed929fa873ba6db09bbe70fd51bf8';
+
+        async function sha256(str) {
+            const buf = new TextEncoder().encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function loadCustomProducts() {
+            try { return JSON.parse(localStorage.getItem('rrmg_custom_products') || '[]'); } catch { return []; }
+        }
+
+        function saveCustomProducts(products) {
+            localStorage.setItem('rrmg_custom_products', JSON.stringify(products));
+        }
+
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminLoginError').style.display = 'none';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        async function verifyAdminPassword() {
+            const input = document.getElementById('adminPasswordInput').value;
+            const hash = await sha256(input);
+            if (hash === OWNER_HASH) {
+                document.getElementById('adminLoginModal').style.display = 'none';
+                openAdminPanel();
+            } else {
+                const err = document.getElementById('adminLoginError');
+                err.textContent = 'Invalid owner password.';
+                err.style.display = 'block';
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'block';
+            renderAdminProductList();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        function addAdminProduct() {
+            const name = document.getElementById('ap-name').value.trim();
+            const brand = document.getElementById('ap-brand').value.trim();
+            const price = document.getElementById('ap-price').value.trim();
+            const icon = document.getElementById('ap-icon').value.trim();
+            const type = document.getElementById('ap-type').value;
+            const desc = document.getElementById('ap-desc').value.trim();
+            if (!name || !price || !brand) { alert('Name, price, and brand ID are required.'); return; }
+
+            const products = loadCustomProducts();
+            products.push({
+                id: 'custom_' + Date.now(),
+                name, brand, price, icon: icon || '📦', type, description: desc,
+                addedAt: new Date().toISOString()
+            });
+            saveCustomProducts(products);
+            document.getElementById('ap-name').value = '';
+            document.getElementById('ap-brand').value = '';
+            document.getElementById('ap-price').value = '';
+            document.getElementById('ap-icon').value = '';
+            document.getElementById('ap-desc').value = '';
+            renderAdminProductList();
+            // Refresh brand store display if open
+            renderBrandProducts();
+        }
+
+        function deleteAdminProduct(id) {
+            if (!confirm('Remove this product?')) return;
+            const products = loadCustomProducts().filter(p => p.id !== id);
+            saveCustomProducts(products);
+            renderAdminProductList();
+            renderBrandProducts();
+        }
+
+        function renderAdminProductList() {
+            const container = document.getElementById('adminProductList');
+            const products = loadCustomProducts();
+            if (products.length === 0) {
+                container.innerHTML = '<p style="color:#666;text-align:center;padding:1rem">No custom products yet.</p>';
+                return;
+            }
+            container.innerHTML = products.map(p => `
+                <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg-card)">
+                    <span style="font-size:1.5rem">${p.icon || '📦'}</span>
+                    <div style="flex:1">
+                        <strong style="color:var(--gold-light)">${p.name}</strong>
+                        <span style="color:#888;font-size:0.8rem;margin-left:8px">${p.price}</span>
+                        <span style="color:#666;font-size:0.75rem;margin-left:8px">(${p.type})</span>
+                    </div>
+                    <button onclick="deleteAdminProduct('${p.id}')" style="background:#ef4444;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.8rem">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        window.onclick = function(event) {
+            const brandModal = document.getElementById('brandModal');
+            if (event.target == brandModal) { brandModal.style.display = 'none'; }
+            const pluginStoreModal = document.getElementById('pluginStoreModal');
+            if (event.target == pluginStoreModal) { pluginStoreModal.style.display = 'none'; }
+            const adminLoginModal = document.getElementById('adminLoginModal');
+            if (event.target == adminLoginModal) { adminLoginModal.style.display = 'none'; }
+            const adminPanelModal = document.getElementById('adminPanelModal');
+            if (event.target == adminPanelModal) { adminPanelModal.style.display = 'none'; }
+            const checkoutModal = document.getElementById('checkoutModal');
+            if (event.target == checkoutModal) { closeCheckout(); }
+        };
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        fetchPlaylist();
+    </script>
+
+        <style>
+        .cms-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+        .cms-tab-btn{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;font-size:0.85rem}
+        .cms-tab-btn.active{background:var(--gold);color:#141414;border-color:var(--gold);font-weight:700}
+        .cms-tab{display:none}
+        .cms-hint{color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.75rem}
+        .cms-row{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--bg-primary);flex-wrap:wrap}
+        .cms-row input[type=text]{flex:1;min-width:120px;padding:8px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);color:var(--text-primary)}
+        .cms-row input[type=password]{flex:1;min-width:160px;padding:8px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);color:var(--text-primary)}
+        .cms-row input[type=file]{color:var(--text-secondary);font-size:0.8rem;max-width:220px}
+        .cms-mini{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);cursor:pointer;font-size:0.8rem;white-space:nowrap}
+        .cms-mini.danger{border-color:#a33;color:#f88}
+        .cms-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex:none;background:var(--bg-card)}
+        .cms-save{padding:10px 22px;border-radius:8px;background:var(--gold);color:#141414;font-weight:700;border:none;cursor:pointer;margin-top:6px}
+        .cms-status{font-size:0.85rem;color:var(--text-secondary);margin-top:8px;min-height:1.4em}
+        .playlist-item-art-fallback{width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--gold-glow);border:1px solid var(--border);border-radius:8px}
+        </style>
+        <script>
+/* ============ Redemption Road Owner CMS ============ */
+const GH_RAW = 'https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/';
+const GH_API = 'https://api.github.com/repos/RJF-72/redemptionroadmg-site/contents/';
+const cmsBust = () => '?t=' + Date.now();
+const cmsById = id => document.getElementById(id);
+
+function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function initials(name) {
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    return (parts.map(w => w[0]).join('').slice(0, 2).toUpperCase()) || '?';
+}
+
+/* ---------- public rendering from content.json ---------- */
+const DEFAULT_CONTENT = {
+    hero: { image: GH_RAW + 'images/rrmg-hero.jpg' },
+    aboutSubtitle: '"Rooted in faith. Built on grit."',
+    team: [
+        { name: 'Ray Flanary', role: 'Founder & Director', photo: GH_RAW + 'images/ray-flanary.jpg' },
+        { name: 'Joni Flanary', role: 'CEO', photo: '' },
+        { name: 'Keith Sproles', role: 'COO', photo: GH_RAW + 'images/keith-sproles.jpg' },
+        { name: 'Paige Sproles', role: 'Director of Talent Development', photo: GH_RAW + 'images/paige-sproles.jpg' }
+    ],
+    artists: [
+        { name: 'Ray Flanary', role: 'Founder & Artist', photo: GH_RAW + 'images/ray-flanary.jpg' },
+        { name: 'Keith Sproles', role: 'Artist & Producer', photo: GH_RAW + 'images/keith-sproles.jpg' },
+        { name: 'Paige Sproles', role: 'Artist & Songwriter', photo: GH_RAW + 'images/paige-sproles.jpg' }
+    ]
+};
+let siteContent = null;
+
+async function loadSiteContent() {
+    try {
+        const r = await fetch(GH_RAW + 'content/content.json' + cmsBust());
+        if (r.ok) siteContent = await r.json();
+    } catch (e) { /* offline -> defaults */ }
+    if (!siteContent || !Array.isArray(siteContent.team)) {
+        siteContent = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+    }
+    renderTeam();
+    renderArtists();
+    applySiteText();
+}
+function renderTeam() {
+    const g = cmsById('teamGrid');
+    if (!g) return;
+    g.innerHTML = siteContent.team.map(m =>
+        '<div class="team-member">' +
+        (m.photo
+            ? '<img src="' + escapeHtml(m.photo) + '" alt="' + escapeHtml(m.name) + '">'
+            : '<div class="photo-placeholder">' + initials(m.name) + '</div>') +
+        '<div class="team-member-info"><h3>' + escapeHtml(m.name) + '</h3><p>' + escapeHtml(m.role) + '</p></div>' +
+        '</div>'
+    ).join('');
+}
+function renderArtists() {
+    const g = cmsById('rosterGrid');
+    if (!g) return;
+    g.innerHTML = siteContent.artists.map(a =>
+        '<div class="artist-card">' +
+        (a.photo
+            ? '<img src="' + escapeHtml(a.photo) + '" alt="' + escapeHtml(a.name) + '">'
+            : '<div class="photo-placeholder">' + initials(a.name) + '</div>') +
+        '<div class="artist-info"><h3>' + escapeHtml(a.name) + '</h3><p>' + escapeHtml(a.role) + '</p></div>' +
+        '</div>'
+    ).join('');
+}
+function applySiteText() {
+    const st = cmsById('aboutSubtitle');
+    if (st && siteContent.aboutSubtitle) st.textContent = siteContent.aboutSubtitle;
+    const home = cmsById('home');
+    if (home && siteContent.hero && siteContent.hero.image) {
+        home.style.backgroundImage = "url('" + siteContent.hero.image + "')";
+    }
+}
+document.addEventListener('DOMContentLoaded', loadSiteContent);
+
+/* ---------- dashboard tabs ---------- */
+function cmsTab(name, btn) {
+    document.querySelectorAll('#adminPanelModal .cms-tab').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('#adminPanelModal .cms-tab-btn').forEach(b => b.classList.remove('active'));
+    cmsById('cms-tab-' + name).style.display = 'block';
+    if (btn) btn.classList.add('active');
+    if (name === 'settings') {
+        cmsById('cms-pat').value = localStorage.getItem('rrmg_github_pat') || '';
+    }
+    if ((name === 'music' || name === 'photos' || name === 'text') && !cmsDataLoaded && !cmsDataLoading) {
+        loadCmsData();
+    }
+}
+
+/* ---------- GitHub API (owner's token, this browser only) ---------- */
+function ghHeaders() {
+    const pat = (localStorage.getItem('rrmg_github_pat') || '').trim();
+    return {
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + pat
+    };
+}
+function b64encodeUtf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+function b64decodeUtf8(b64) { return decodeURIComponent(escape(atob(b64))); }
+
+async function ghReadJson(path, fallback) {
+    const r = await fetch(GH_API + path + '?ref=main', { headers: ghHeaders() });
+    if (r.status === 404) return { data: fallback, sha: null };
+    if (!r.ok) throw new Error('GitHub read failed (' + r.status + '). Check your token in Settings.');
+    const j = await r.json();
+    return { data: JSON.parse(b64decodeUtf8(j.content.replace(/\s/g, ''))), sha: j.sha };
+}
+async function ghWriteJson(path, obj, sha, message) {
+    const body = { message: message, content: b64encodeUtf8(JSON.stringify(obj, null, 2)), branch: 'main' };
+    if (sha) body.sha = sha;
+    const r = await fetch(GH_API + path, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+    if (!r.ok) {
+        const t = await r.text();
+        throw new Error('GitHub write failed (' + r.status + '): ' + t.slice(0, 160));
+    }
+    return (await r.json()).content.sha;
+}
+function fileToB64(file) {
+    return new Promise((res, rej) => {
+        const fr = new FileReader();
+        fr.onload = () => res(String(fr.result).split(',')[1]);
+        fr.onerror = rej;
+        fr.readAsDataURL(file);
+    });
+}
+async function ghUpload(folder, file) {
+    const b64 = await fileToB64(file);
+    const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const name = Date.now() + '-' + safe;
+    const path = folder + '/' + name;
+    const r = await fetch(GH_API + path, {
+        method: 'PUT',
+        headers: ghHeaders(),
+        body: JSON.stringify({ message: 'Owner dashboard upload: ' + name, content: b64, branch: 'main' })
+    });
+    if (!r.ok) throw new Error('Upload failed (' + r.status + '). MP3s must be under 100MB.');
+    return GH_RAW + path;
+}
+
+/* ---------- dashboard state ---------- */
+let cmsTracks = [], cmsTracksSha = null;
+let cmsContent = null, cmsContentSha = null;
+let cmsDataLoaded = false, cmsDataLoading = false;
+
+function cmsNeedToken() {
+    return !(localStorage.getItem('rrmg_github_pat') || '').trim();
+}
+async function loadCmsData() {
+    if (cmsNeedToken()) {
+        ['music', 'photos', 'text'].forEach(t => {
+            const s = cmsById('cms-' + t + '-status');
+            if (s) s.innerHTML = 'Add your GitHub token in the <b>Settings</b> tab first.';
+        });
+        return;
+    }
+    cmsDataLoading = true;
+    try {
+        const pl = await ghReadJson('content/playlist.json', []);
+        cmsTracks = Array.isArray(pl.data) ? pl.data : [];
+        cmsTracksSha = pl.sha;
+        const ct = await ghReadJson('content/content.json', null);
+        cmsContent = (ct.data && Array.isArray(ct.data.team))
+            ? ct.data
+            : JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+        cmsContent.hero = cmsContent.hero || { image: '' };
+        cmsContentSha = ct.sha;
+        cmsDataLoaded = true;
+        renderCmsTracks();
+        renderCmsPeople();
+        renderCmsTextTab();
+    } catch (e) {
+        ['music', 'photos', 'text'].forEach(t => {
+            const s = cmsById('cms-' + t + '-status');
+            if (s) s.textContent = 'Error: ' + e.message;
+        });
+    }
+    cmsDataLoading = false;
+}
+
+/* ---------- music tab ---------- */
+function renderCmsTracks() {
+    const list = cmsById('cmsTrackList');
+    if (!cmsTracks.length) {
+        list.innerHTML = '<p class="cms-hint">No tracks yet. Add your first song below.</p>';
+        return;
+    }
+    list.innerHTML = cmsTracks.map((t, i) =>
+        '<div class="cms-row">' +
+        '<span style="color:var(--gold);font-weight:700;min-width:20px">' + (i + 1) + '</span>' +
+        '<input type="text" placeholder="Song title" value="' + escapeHtml(t.title) + '" data-i="' + i + '" data-f="title" onchange="cmsTrackEdit(this)">' +
+        '<input type="text" placeholder="Artist" value="' + escapeHtml(t.artist) + '" data-i="' + i + '" data-f="artist" onchange="cmsTrackEdit(this)">' +
+        (t._file ? '<span class="cms-hint" style="margin:0">new file: ' + escapeHtml(t._file.name) + '</span>' : '') +
+        '<button class="cms-mini" onclick="cmsTrackMove(' + i + ',-1)">&#8593;</button>' +
+        '<button class="cms-mini" onclick="cmsTrackMove(' + i + ',1)">&#8595;</button>' +
+        '<button class="cms-mini danger" onclick="cmsTrackDel(' + i + ')">&#128465;</button>' +
+        '</div>'
+    ).join('');
+}
+function cmsTrackEdit(el) { cmsTracks[+el.dataset.i][el.dataset.f] = el.value; }
+function cmsTrackMove(i, d) {
+    const j = i + d;
+    if (j < 0 || j >= cmsTracks.length) return;
+    const t = cmsTracks[i];
+    cmsTracks[i] = cmsTracks[j];
+    cmsTracks[j] = t;
+    renderCmsTracks();
+}
+function cmsTrackDel(i) {
+    if (confirm('Remove this track?')) { cmsTracks.splice(i, 1); renderCmsTracks(); }
+}
+function cmsAddTrack() {
+    const title = cmsById('cms-new-title').value.trim();
+    const artist = cmsById('cms-new-artist').value.trim();
+    const file = cmsById('cms-new-file').files[0];
+    const url = cmsById('cms-new-url').value.trim();
+    if (!title) { alert('Give the song a title first.'); return; }
+    if (!file && !url) { alert('Pick an MP3 file or paste a URL.'); return; }
+    cmsTracks.push({ title: title, artist: artist || 'Redemption Road', stream_url: url || '', _file: file || null });
+    cmsById('cms-new-title').value = '';
+    cmsById('cms-new-artist').value = '';
+    cmsById('cms-new-file').value = '';
+    cmsById('cms-new-url').value = '';
+    renderCmsTracks();
+    cmsById('cms-music-status').textContent = 'Track added — hit "Save Music to Site" to publish.';
+}
+async function cmsSaveMusic() {
+    const st = cmsById('cms-music-status');
+    try {
+        for (const t of cmsTracks) {
+            if (t._file) {
+                st.textContent = 'Uploading ' + t._file.name + '...';
+                t.stream_url = await ghUpload('audio', t._file);
+                delete t._file;
+            }
+            if (!t.stream_url) throw new Error('"' + t.title + '" has no audio file or URL.');
+        }
+        st.textContent = 'Publishing playlist...';
+        const clean = cmsTracks.map(t => ({ title: t.title, artist: t.artist, stream_url: t.stream_url }));
+        cmsTracksSha = await ghWriteJson('content/playlist.json', clean, cmsTracksSha, 'Owner dashboard: update playlist');
+        cmsTracks = clean;
+        st.textContent = '\u2713 Music published! It appears on the site in a few minutes.';
+        if (typeof fetchPlaylist === 'function') fetchPlaylist();
+    } catch (e) { st.textContent = 'Error: ' + e.message; }
+}
+
+/* ---------- photos tab ---------- */
+function renderCmsPeople() {
+    renderCmsPersonList('team', cmsById('cmsTeamList'));
+    renderCmsPersonList('artists', cmsById('cmsArtistList'));
+}
+function renderCmsPersonList(key, el) {
+    el.innerHTML = cmsContent[key].map((p, i) =>
+        '<div class="cms-row">' +
+        (p.photo
+            ? '<img class="cms-thumb" src="' + escapeHtml(p.photo) + '">'
+            : '<div class="cms-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--gold)">?</div>') +
+        '<input type="text" placeholder="Name" value="' + escapeHtml(p.name) + '" data-k="' + key + '" data-i="' + i + '" data-f="name" onchange="cmsPersonEdit(this)">' +
+        '<input type="text" placeholder="Role" value="' + escapeHtml(p.role) + '" data-k="' + key + '" data-i="' + i + '" data-f="role" onchange="cmsPersonEdit(this)">' +
+        '<label class="cms-mini" style="cursor:pointer">Upload<input type="file" accept="image/*" style="display:none" data-k="' + key + '" data-i="' + i + '" onchange="cmsPersonPhoto(this)"></label>' +
+        '<button class="cms-mini" onclick="cmsPersonUrl(\'' + key + '\',' + i + ')">URL</button>' +
+        '<button class="cms-mini" onclick="cmsPersonClear(\'' + key + '\',' + i + ')">Clear</button>' +
+        '<button class="cms-mini danger" onclick="cmsPersonDel(\'' + key + '\',' + i + ')">&#128465;</button>' +
+        '</div>'
+    ).join('');
+}
+function cmsPersonEdit(el) { cmsContent[el.dataset.k][+el.dataset.i][el.dataset.f] = el.value; }
+function cmsPersonPhoto(input) {
+    const f = input.files[0];
+    if (!f) return;
+    const p = cmsContent[input.dataset.k][+input.dataset.i];
+    p._file = f;
+    p.photo = URL.createObjectURL(f);
+    renderCmsPeople();
+    cmsById('cms-photos-status').textContent = 'Photo staged — hit "Save Photos to Site" to publish.';
+}
+function cmsPersonUrl(key, i) {
+    const u = prompt('Paste image URL:', cmsContent[key][i].photo || '');
+    if (u !== null) {
+        cmsContent[key][i].photo = u.trim();
+        delete cmsContent[key][i]._file;
+        renderCmsPeople();
+    }
+}
+function cmsPersonClear(key, i) {
+    cmsContent[key][i].photo = '';
+    delete cmsContent[key][i]._file;
+    renderCmsPeople();
+}
+function cmsPersonDel(key, i) {
+    if (confirm('Remove this person?')) { cmsContent[key].splice(i, 1); renderCmsPeople(); }
+}
+function cmsAddPerson(key) {
+    cmsContent[key].push({ name: '', role: '', photo: '' });
+    renderCmsPeople();
+}
+function cmsCleanContent() {
+    const person = p => ({ name: p.name || '', role: p.role || '', photo: p.photo || '' });
+    return {
+        hero: { image: (cmsContent.hero && cmsContent.hero.image) || '' },
+        aboutSubtitle: cmsContent.aboutSubtitle || '',
+        team: cmsContent.team.map(person),
+        artists: cmsContent.artists.map(person)
+    };
+}
+async function cmsSavePhotos() {
+    const st = cmsById('cms-photos-status');
+    try {
+        for (const key of ['team', 'artists']) {
+            for (const p of cmsContent[key]) {
+                if (p._file) {
+                    st.textContent = 'Uploading photo...';
+                    p.photo = await ghUpload('images', p._file);
+                    delete p._file;
+                }
+            }
+        }
+        st.textContent = 'Publishing...';
+        const clean = cmsCleanContent();
+        cmsContentSha = await ghWriteJson('content/content.json', clean, cmsContentSha, 'Owner dashboard: update photos');
+        cmsContent = clean;
+        st.textContent = '\u2713 Photos published! They appear on the site in a few minutes.';
+        loadSiteContent();
+    } catch (e) { st.textContent = 'Error: ' + e.message; }
+}
+
+/* ---------- site text tab ---------- */
+function renderCmsTextTab() {
+    cmsById('cms-about-subtitle').value = cmsContent.aboutSubtitle || '';
+    const hp = cmsById('cms-hero-preview');
+    const img = cmsContent.hero && cmsContent.hero.image;
+    if (img) { hp.src = img; hp.style.display = 'block'; }
+    else { hp.style.display = 'none'; }
+    cmsById('cms-hero-url').value = '';
+    cmsById('cms-hero-file').value = '';
+}
+function cmsClearHero() {
+    cmsContent.hero.image = '';
+    renderCmsTextTab();
+}
+async function cmsSaveText() {
+    const st = cmsById('cms-text-status');
+    try {
+        cmsContent.aboutSubtitle = cmsById('cms-about-subtitle').value;
+        const hf = cmsById('cms-hero-file').files[0];
+        const hu = cmsById('cms-hero-url').value.trim();
+        if (hf) {
+            st.textContent = 'Uploading hero image...';
+            cmsContent.hero.image = await ghUpload('images', hf);
+        } else if (hu) {
+            cmsContent.hero.image = hu;
+        }
+        st.textContent = 'Publishing...';
+        const clean = cmsCleanContent();
+        cmsContentSha = await ghWriteJson('content/content.json', clean, cmsContentSha, 'Owner dashboard: update site text');
+        cmsContent = clean;
+        st.textContent = '\u2713 Published!';
+        renderCmsTextTab();
+        loadSiteContent();
+    } catch (e) { st.textContent = 'Error: ' + e.message; }
+}
+
+/* ---------- settings tab ---------- */
+function cmsSavePat() {
+    localStorage.setItem('rrmg_github_pat', cmsById('cms-pat').value.trim());
+    cmsById('cms-settings-status').textContent = '\u2713 Token saved in this browser.';
+    cmsDataLoaded = false;
+    cmsDataLoading = false;
+}
+async function cmsTestPat() {
+    const st = cmsById('cms-settings-status');
+    st.textContent = 'Testing...';
+    try {
+        const r = await fetch(GH_API + '?ref=main', { headers: ghHeaders() });
+        if (!r.ok) throw new Error('GitHub said ' + r.status + ' — check the token and its repo permissions.');
+        st.textContent = '\u2713 Connected to the site repo!';
+    } catch (e) { st.textContent = 'Error: ' + e.message; }
+}
+
+        </script>
+</body>
+</html>
