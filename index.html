@@ -1041,6 +1041,7 @@
             <button class="cms-tab-btn" onclick="cmsTab('text', this)">&#9998;&#65039; Site Text</button>
             <button class="cms-tab-btn" onclick="cmsTab('settings', this)">&#9881;&#65039; Settings</button>
         </div>
+        <div class="cms-conn" id="cms-conn" style="display:none"></div>
         <div id="cms-tab-products" class="cms-tab" style="display:block;">
 
             <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem">
@@ -1107,19 +1108,21 @@
             <div class="cms-status" id="cms-text-status"></div>
         </div>
         <div id="cms-tab-settings" class="cms-tab">
-            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#9881;&#65039; GitHub Connection</h3>
-            <p class="cms-hint">Your changes are saved to your website&apos;s GitHub repo. Create a token once and paste it here &mdash; it stays in this browser only, never in the site code.</p>
+            <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#9881;&#65039; Publishing Connection</h3>
+            <p class="cms-hint" id="cms-conn-summary">Checking connection&hellip;</p>
+            <p class="cms-hint">Publishing runs through your website's GitHub repo. <b>One-time setup:</b> paste a GitHub token below and hit <b>Connect</b>. The dashboard stores it encrypted behind your owner password, so from then on your password alone turns publishing on &mdash; on any computer.</p>
             <div class="cms-row">
-                <input type="password" id="cms-pat" placeholder="github_pat_...">
-                <button class="cms-mini" onclick="cmsSavePat()">Save</button>
+                <input type="password" id="cms-pat" placeholder="Paste GitHub token (one-time only)">
+                <button class="cms-mini" onclick="cmsSavePat()">Connect</button>
                 <button class="cms-mini" onclick="cmsTestPat()">Test</button>
             </div>
             <div class="cms-status" id="cms-settings-status"></div>
             <ol class="cms-hint" style="margin-top:1rem;padding-left:1.2rem">
-                <li>On GitHub: Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens</li>
-                <li>Generate new token &rarr; Repository access: <b>Only select repositories</b> &rarr; pick <b>redemptionroadmg-site</b></li>
-                <li>Permissions: <b>Contents</b> &rarr; Read and write. Generate it, copy, paste above, Save.</li>
+                <li>On GitHub: Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens &rarr; Generate new token</li>
+                <li>Name it e.g. <b>Redemption Road site publishing</b>; Repository access: <b>Only select repositories</b> &rarr; pick <b>redemptionroadmg-site</b></li>
+                <li>Permissions &rarr; Repository permissions &rarr; <b>Contents: Read and write</b>. Generate, copy, paste above, hit Connect.</li>
             </ol>
+            <p class="cms-hint">Already connected on another computer? Just log in with your owner password &mdash; publishing turns on by itself.</p>
         </div></div></div>
 
     <div id="checkoutModal" class="modal">
@@ -1718,8 +1721,10 @@
             const input = document.getElementById('adminPasswordInput').value;
             const hash = await sha256(input);
             if (hash === OWNER_HASH) {
+                window.__rrmgPw = input;
                 document.getElementById('adminLoginModal').style.display = 'none';
                 openAdminPanel();
+                if (window.cmsOnLogin) window.cmsOnLogin();
             } else {
                 const err = document.getElementById('adminLoginError');
                 err.textContent = 'Invalid owner password.';
@@ -1830,12 +1835,29 @@
         .cms-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex:none;background:var(--bg-card)}
         .cms-save{padding:10px 22px;border-radius:8px;background:var(--gold);color:#141414;font-weight:700;border:none;cursor:pointer;margin-top:6px}
         .cms-status{font-size:0.85rem;color:var(--text-secondary);margin-top:8px;min-height:1.4em}
+        .cms-conn{font-size:0.85rem;padding:10px 14px;border-radius:8px;margin-bottom:1rem;border:1px solid var(--border);color:var(--text-secondary)}
+        .cms-conn.ok{background:rgba(46,160,67,.14);border-color:#2ea043;color:#8fe3ab}
+        .cms-conn.bad{background:rgba(200,60,60,.12);border-color:#a33;color:#f3a3a3}
+        .cms-save[disabled]{opacity:.45;cursor:not-allowed}
         .playlist-item-art-fallback{width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--gold-glow);border:1px solid var(--border);border-radius:8px}
         </style>
         <script>
-/* ============ Redemption Road Owner CMS ============ */
+/* ============ Redemption Road Owner CMS ============
+   Publishing model (v2):
+   - The public page renders team/artists/hero from content/content.json and
+     the jukebox from content/playlist.json, both served from this repo.
+   - The dashboard writes those files (and uploads media into images/ and
+     audio/) through the GitHub Contents API.
+   - The GitHub token lives in an encrypted vault (content/.vault.json):
+     AES-256-GCM, key derived from the owner password via PBKDF2-SHA-256
+     (600k iterations). At login the dashboard unlocks the vault with the
+     password Ray already typed, so publishing works on any browser with
+     the password alone. A token pasted once in Settings (re)provisions the
+     vault. localStorage keeps a same-browser fallback copy, as before.
+   ==================================================== */
 const GH_RAW = 'https://raw.githubusercontent.com/RJF-72/redemptionroadmg-site/main/';
 const GH_API = 'https://api.github.com/repos/RJF-72/redemptionroadmg-site/contents/';
+const GH_REPO_API = 'https://api.github.com/repos/RJF-72/redemptionroadmg-site';
 const cmsBust = () => '?t=' + Date.now();
 const cmsById = id => document.getElementById(id);
 
@@ -1917,30 +1939,66 @@ function cmsTab(name, btn) {
     document.querySelectorAll('#adminPanelModal .cms-tab-btn').forEach(b => b.classList.remove('active'));
     cmsById('cms-tab-' + name).style.display = 'block';
     if (btn) btn.classList.add('active');
-    if (name === 'settings') {
-        cmsById('cms-pat').value = localStorage.getItem('rrmg_github_pat') || '';
-    }
     if ((name === 'music' || name === 'photos' || name === 'text') && !cmsDataLoaded && !cmsDataLoading) {
         loadCmsData();
     }
 }
 
-/* ---------- GitHub API (owner's token, this browser only) ---------- */
+/* ---------- connection state ---------- */
+let cmsToken = '';
+let cmsConnected = false;
+
+function cmsActiveToken() {
+    return cmsToken || (localStorage.getItem('rrmg_github_pat') || '').trim();
+}
+function cmsSetConn(state, msg) {
+    const b = cmsById('cms-conn');
+    if (b) {
+        b.style.display = 'block';
+        b.className = 'cms-conn ' + state;
+        b.innerHTML = msg;
+    }
+    cmsConnected = (state === 'ok');
+    document.querySelectorAll('#adminPanelModal .cms-save').forEach(btn => { btn.disabled = !cmsConnected; });
+    const sum = cmsById('cms-conn-summary');
+    if (sum) sum.innerHTML = msg;
+}
+function cmsPlainError(e) {
+    const m = String((e && e.message) || e || '');
+    if (/\(401\)|Bad credentials/i.test(m)) return 'GitHub rejected the publishing token (it has expired or been revoked). Reconnect it in the Settings tab.';
+    if (/\(403\)/.test(m)) return 'GitHub refused the write (403). The token needs Contents Read and write permission on the redemptionroadmg-site repo — reconnect it in the Settings tab.';
+    if (/\(404\)/.test(m)) return 'GitHub could not find the site repo for this token. The token must be scoped to the redemptionroadmg-site repo — reconnect it in the Settings tab.';
+    if (/\(409\)|sha/i.test(m)) return 'The site content changed since this window loaded. Your change was re-applied against the newest version — if this keeps happening, close and reopen the dashboard.';
+    if (/\(422\)/.test(m)) return 'GitHub rejected the update (422). Close the dashboard, reopen it, and try again.';
+    return m;
+}
+
+/* ---------- GitHub API ---------- */
 function ghHeaders() {
-    const pat = (localStorage.getItem('rrmg_github_pat') || '').trim();
     return {
         'Accept': 'application/vnd.github+json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + pat
+        'Authorization': 'Bearer ' + cmsActiveToken()
     };
 }
 function b64encodeUtf8(str) { return btoa(unescape(encodeURIComponent(str))); }
 function b64decodeUtf8(b64) { return decodeURIComponent(escape(atob(b64))); }
+function bytesToB64(bytes) {
+    let s = '';
+    bytes.forEach(b => { s += String.fromCharCode(b); });
+    return btoa(s);
+}
+function b64ToBytes(b64) {
+    const s = atob(String(b64).replace(/\s/g, ''));
+    const out = new Uint8Array(s.length);
+    for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i);
+    return out;
+}
 
 async function ghReadJson(path, fallback) {
     const r = await fetch(GH_API + path + '?ref=main', { headers: ghHeaders() });
     if (r.status === 404) return { data: fallback, sha: null };
-    if (!r.ok) throw new Error('GitHub read failed (' + r.status + '). Check your token in Settings.');
+    if (!r.ok) throw new Error('GitHub read failed (' + r.status + '). Check the publishing connection in Settings.');
     const j = await r.json();
     return { data: JSON.parse(b64decodeUtf8(j.content.replace(/\s/g, ''))), sha: j.sha };
 }
@@ -1954,6 +2012,23 @@ async function ghWriteJson(path, obj, sha, message) {
     }
     return (await r.json()).content.sha;
 }
+/* Write with a fresh SHA read immediately beforehand, one retry on conflict.
+   This is what keeps a save from dying with a raw 409 when the repo moved
+   (another publish, a photo added by Muse) after the dashboard loaded. */
+async function ghWriteJsonFresh(path, obj, message) {
+    let lastErr = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+        let sha = null;
+        try { sha = (await ghReadJson(path, null)).sha; } catch (e) { sha = null; }
+        try {
+            return await ghWriteJson(path, obj, sha, message);
+        } catch (e) {
+            lastErr = e;
+            if (!/\(409\)|does not match/i.test(e.message)) throw e;
+        }
+    }
+    throw lastErr;
+}
 function fileToB64(file) {
     return new Promise((res, rej) => {
         const fr = new FileReader();
@@ -1962,7 +2037,13 @@ function fileToB64(file) {
         fr.readAsDataURL(file);
     });
 }
+const CMS_MAX_FILE = 95 * 1024 * 1024, CMS_WARN_FILE = 20 * 1024 * 1024;
+function cmsCheckFile(file) {
+    if (file.size > CMS_MAX_FILE) throw new Error('"' + file.name + '" is too large to publish through the dashboard (over ~95MB).');
+    return file.size > CMS_WARN_FILE;
+}
 async function ghUpload(folder, file) {
+    const large = cmsCheckFile(file);
     const b64 = await fileToB64(file);
     const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
     const name = Date.now() + '-' + safe;
@@ -1972,37 +2053,150 @@ async function ghUpload(folder, file) {
         headers: ghHeaders(),
         body: JSON.stringify({ message: 'Owner dashboard upload: ' + name, content: b64, branch: 'main' })
     });
-    if (!r.ok) throw new Error('Upload failed (' + r.status + '). MP3s must be under 100MB.');
+    if (!r.ok) {
+        const t = await r.text();
+        throw new Error('Upload failed (' + r.status + '): ' + t.slice(0, 140));
+    }
     return GH_RAW + path;
+}
+/* Only files the dashboard itself uploaded (timestamp-prefixed names under
+   audio/ or images/) are ever auto-deleted — hand-committed site images
+   like ray-flanary.jpg never match this pattern. */
+function repoPathFromUrl(url) {
+    if (!url || url.indexOf(GH_RAW) !== 0) return null;
+    const p = url.slice(GH_RAW.length).split('?')[0];
+    return /^(audio|images)\/\d{10,}-/.test(p) ? p : null;
+}
+async function ghDeleteFile(path) {
+    const r = await fetch(GH_API + path + '?ref=main', { headers: ghHeaders() });
+    if (r.status === 404) return;
+    if (!r.ok) throw new Error('Delete lookup failed (' + r.status + ')');
+    const j = await r.json();
+    const d = await fetch(GH_API + path, {
+        method: 'DELETE',
+        headers: ghHeaders(),
+        body: JSON.stringify({ message: 'Owner dashboard: remove ' + path, sha: j.sha, branch: 'main' })
+    });
+    if (!d.ok) throw new Error('Delete failed (' + d.status + ')');
+}
+async function cmsDeleteUnreferenced(urls) {
+    for (const u of urls) {
+        const p = repoPathFromUrl(u);
+        if (p) { try { await ghDeleteFile(p); } catch (e) { /* leave the file; manifest is already correct */ } }
+    }
+}
+
+/* ---------- encrypted publishing vault ----------
+   content/.vault.json holds the GitHub token encrypted with a key derived
+   from the owner password. The ciphertext is safe to keep in the public
+   repo: opening it needs the password, and the token inside is scoped to
+   this one repo, Contents only. */
+const CMS_VAULT_PATH = 'content/.vault.json';
+const CMS_VAULT_ITER = 600000;
+async function cmsVaultKey(pw, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: CMS_VAULT_ITER, hash: 'SHA-256' },
+        km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function cmsVaultEncrypt(pw, token) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await cmsVaultKey(pw, salt);
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(token));
+    return { v: 1, kdf: 'PBKDF2-SHA256', iter: CMS_VAULT_ITER, salt: bytesToB64(salt), iv: bytesToB64(iv), ct: bytesToB64(new Uint8Array(ct)) };
+}
+async function cmsVaultDecrypt(vault, pw) {
+    if (!vault || !vault.ct || !pw) return null;
+    try {
+        const key = await cmsVaultKey(pw, b64ToBytes(vault.salt));
+        const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(vault.iv) }, key, b64ToBytes(vault.ct));
+        return new TextDecoder().decode(pt);
+    } catch (e) { return null; }
+}
+async function cmsVaultFetch() {
+    try {
+        const r = await fetch(GH_RAW + CMS_VAULT_PATH + cmsBust());
+        if (r.ok) return await r.json();
+    } catch (e) { /* no vault yet */ }
+    return null;
+}
+async function cmsVaultStore(token) {
+    const pw = window.__rrmgPw || '';
+    if (!pw) throw new Error('Owner password not in this session — log out and back in, then reconnect.');
+    const vault = await cmsVaultEncrypt(pw, token);
+    await ghWriteJsonFresh(CMS_VAULT_PATH, vault, 'Owner dashboard: update publishing vault');
+}
+async function cmsTokenValid(tok) {
+    if (!tok) return { ok: false, status: 0 };
+    try {
+        const r = await fetch(GH_REPO_API, { headers: { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + tok } });
+        return { ok: r.ok, status: r.status };
+    } catch (e) { return { ok: false, status: -1 }; }
+}
+
+/* Called by verifyAdminPassword() right after the owner logs in. */
+async function cmsOnLogin() {
+    cmsSetConn('checking', 'Checking your publishing connection…');
+    const pw = window.__rrmgPw || '';
+    let active = '';
+    // 1) The vault: password alone unlocks publishing, on any browser.
+    const vault = await cmsVaultFetch();
+    if (vault && pw) {
+        const fromVault = await cmsVaultDecrypt(vault, pw);
+        if (fromVault) {
+            const v = await cmsTokenValid(fromVault);
+            if (v.ok) active = fromVault;
+        }
+    }
+    // 2) A token saved in this browser (the old flow / just pasted).
+    if (!active) {
+        const local = (localStorage.getItem('rrmg_github_pat') || '').trim();
+        if (local) {
+            const v = await cmsTokenValid(local);
+            if (v.ok) {
+                active = local;
+                // Self-heal: a working token found anywhere gets written
+                // into the vault so the password alone works next time.
+                if (pw) { try { await cmsVaultStoreWith(active); } catch (e) { /* vault refresh is best-effort */ } }
+            }
+        }
+    }
+    if (active) {
+        cmsToken = active;
+        try { localStorage.setItem('rrmg_github_pat', active); } catch (e) {}
+        cmsSetConn('ok', '&#10003; Publishing is <b>connected</b> — changes you save here go live on the site for everyone.');
+        loadCmsData();
+    } else {
+        cmsToken = '';
+        cmsSetConn('bad', 'Publishing is <b>not connected</b> yet, so Music / Photos / Site Text can be viewed but not saved. One-time fix: open the <b>Settings</b> tab and connect your GitHub token — after that, your owner password alone turns publishing on, on any computer.');
+    }
+}
+async function cmsVaultStoreWith(token) {
+    cmsToken = token;
+    try { localStorage.setItem('rrmg_github_pat', token); } catch (e) {}
+    await cmsVaultStore(token);
 }
 
 /* ---------- dashboard state ---------- */
-let cmsTracks = [], cmsTracksSha = null;
-let cmsContent = null, cmsContentSha = null;
+let cmsTracks = [], cmsTracksSaved = [];
+let cmsContent = null, cmsContentSaved = null;
 let cmsDataLoaded = false, cmsDataLoading = false;
 
-function cmsNeedToken() {
-    return !(localStorage.getItem('rrmg_github_pat') || '').trim();
-}
+function cmsNeedToken() { return !cmsActiveToken(); }
 async function loadCmsData() {
-    if (cmsNeedToken()) {
-        ['music', 'photos', 'text'].forEach(t => {
-            const s = cmsById('cms-' + t + '-status');
-            if (s) s.innerHTML = 'Add your GitHub token in the <b>Settings</b> tab first.';
-        });
-        return;
-    }
+    if (cmsNeedToken()) return; // the banner already explains the state
     cmsDataLoading = true;
     try {
         const pl = await ghReadJson('content/playlist.json', []);
         cmsTracks = Array.isArray(pl.data) ? pl.data : [];
-        cmsTracksSha = pl.sha;
+        cmsTracksSaved = JSON.parse(JSON.stringify(cmsTracks));
         const ct = await ghReadJson('content/content.json', null);
         cmsContent = (ct.data && Array.isArray(ct.data.team))
             ? ct.data
             : JSON.parse(JSON.stringify(DEFAULT_CONTENT));
         cmsContent.hero = cmsContent.hero || { image: '' };
-        cmsContentSha = ct.sha;
+        cmsContentSaved = JSON.parse(JSON.stringify(cmsCleanContent()));
         cmsDataLoaded = true;
         renderCmsTracks();
         renderCmsPeople();
@@ -2010,7 +2204,7 @@ async function loadCmsData() {
     } catch (e) {
         ['music', 'photos', 'text'].forEach(t => {
             const s = cmsById('cms-' + t + '-status');
-            if (s) s.textContent = 'Error: ' + e.message;
+            if (s) s.textContent = 'Error: ' + cmsPlainError(e);
         });
     }
     cmsDataLoading = false;
@@ -2054,6 +2248,10 @@ function cmsAddTrack() {
     const url = cmsById('cms-new-url').value.trim();
     if (!title) { alert('Give the song a title first.'); return; }
     if (!file && !url) { alert('Pick an MP3 file or paste a URL.'); return; }
+    if (file) {
+        try { cmsCheckFile(file); }
+        catch (e) { alert(e.message); return; }
+    }
     cmsTracks.push({ title: title, artist: artist || 'Redemption Road', stream_url: url || '', _file: file || null });
     cmsById('cms-new-title').value = '';
     cmsById('cms-new-artist').value = '';
@@ -2064,10 +2262,14 @@ function cmsAddTrack() {
 }
 async function cmsSaveMusic() {
     const st = cmsById('cms-music-status');
+    if (!cmsConnected) { st.textContent = 'Publishing is not connected — see the note at the top of this window (Settings tab connects it).'; return; }
     try {
+        // Upload every new file first; only then publish the playlist, so a
+        // failed upload never leaves a half-saved playlist behind.
         for (const t of cmsTracks) {
             if (t._file) {
                 st.textContent = 'Uploading ' + t._file.name + '...';
+                if (cmsCheckFile(t._file)) st.textContent = 'Uploading ' + t._file.name + ' (large file — this can take a minute)...';
                 t.stream_url = await ghUpload('audio', t._file);
                 delete t._file;
             }
@@ -2075,11 +2277,17 @@ async function cmsSaveMusic() {
         }
         st.textContent = 'Publishing playlist...';
         const clean = cmsTracks.map(t => ({ title: t.title, artist: t.artist, stream_url: t.stream_url }));
-        cmsTracksSha = await ghWriteJson('content/playlist.json', clean, cmsTracksSha, 'Owner dashboard: update playlist');
+        await ghWriteJsonFresh('content/playlist.json', clean, 'Owner dashboard: update playlist');
+        const stillUsed = {};
+        clean.forEach(t => { stillUsed[t.stream_url] = true; });
+        const removed = cmsTracksSaved.map(t => t.stream_url).filter(u => u && !stillUsed[u]);
         cmsTracks = clean;
-        st.textContent = '\u2713 Music published! It appears on the site in a few minutes.';
+        cmsTracksSaved = JSON.parse(JSON.stringify(clean));
+        renderCmsTracks();
+        await cmsDeleteUnreferenced(removed);
+        st.textContent = '\u2713 Music published! It appears on the site in about a minute.';
         if (typeof fetchPlaylist === 'function') fetchPlaylist();
-    } catch (e) { st.textContent = 'Error: ' + e.message; }
+    } catch (e) { st.textContent = 'Error: ' + cmsPlainError(e); }
 }
 
 /* ---------- photos tab ---------- */
@@ -2106,6 +2314,7 @@ function cmsPersonEdit(el) { cmsContent[el.dataset.k][+el.dataset.i][el.dataset.
 function cmsPersonPhoto(input) {
     const f = input.files[0];
     if (!f) return;
+    try { cmsCheckFile(f); } catch (e) { alert(e.message); return; }
     const p = cmsContent[input.dataset.k][+input.dataset.i];
     p._file = f;
     p.photo = URL.createObjectURL(f);
@@ -2141,8 +2350,16 @@ function cmsCleanContent() {
         artists: cmsContent.artists.map(person)
     };
 }
+function cmsPhotoUrls(content) {
+    const urls = [];
+    if (!content) return urls;
+    ['team', 'artists'].forEach(k => (content[k] || []).forEach(p => { if (p.photo) urls.push(p.photo); }));
+    if (content.hero && content.hero.image) urls.push(content.hero.image);
+    return urls;
+}
 async function cmsSavePhotos() {
     const st = cmsById('cms-photos-status');
+    if (!cmsConnected) { st.textContent = 'Publishing is not connected — see the note at the top of this window (Settings tab connects it).'; return; }
     try {
         for (const key of ['team', 'artists']) {
             for (const p of cmsContent[key]) {
@@ -2155,11 +2372,17 @@ async function cmsSavePhotos() {
         }
         st.textContent = 'Publishing...';
         const clean = cmsCleanContent();
-        cmsContentSha = await ghWriteJson('content/content.json', clean, cmsContentSha, 'Owner dashboard: update photos');
+        await ghWriteJsonFresh('content/content.json', clean, 'Owner dashboard: update photos');
+        const stillUsed = {};
+        cmsPhotoUrls(clean).forEach(u => { stillUsed[u] = true; });
+        const removed = cmsPhotoUrls(cmsContentSaved).filter(u => !stillUsed[u]);
         cmsContent = clean;
-        st.textContent = '\u2713 Photos published! They appear on the site in a few minutes.';
+        cmsContentSaved = JSON.parse(JSON.stringify(clean));
+        renderCmsPeople();
+        await cmsDeleteUnreferenced(removed);
+        st.textContent = '\u2713 Photos published! They appear on the site in about a minute.';
         loadSiteContent();
-    } catch (e) { st.textContent = 'Error: ' + e.message; }
+    } catch (e) { st.textContent = 'Error: ' + cmsPlainError(e); }
 }
 
 /* ---------- site text tab ---------- */
@@ -2178,11 +2401,13 @@ function cmsClearHero() {
 }
 async function cmsSaveText() {
     const st = cmsById('cms-text-status');
+    if (!cmsConnected) { st.textContent = 'Publishing is not connected — see the note at the top of this window (Settings tab connects it).'; return; }
     try {
         cmsContent.aboutSubtitle = cmsById('cms-about-subtitle').value;
         const hf = cmsById('cms-hero-file').files[0];
         const hu = cmsById('cms-hero-url').value.trim();
         if (hf) {
+            try { cmsCheckFile(hf); } catch (e) { st.textContent = 'Error: ' + e.message; return; }
             st.textContent = 'Uploading hero image...';
             cmsContent.hero.image = await ghUpload('images', hf);
         } else if (hu) {
@@ -2190,29 +2415,56 @@ async function cmsSaveText() {
         }
         st.textContent = 'Publishing...';
         const clean = cmsCleanContent();
-        cmsContentSha = await ghWriteJson('content/content.json', clean, cmsContentSha, 'Owner dashboard: update site text');
+        await ghWriteJsonFresh('content/content.json', clean, 'Owner dashboard: update site text');
+        const stillUsed = {};
+        cmsPhotoUrls(clean).forEach(u => { stillUsed[u] = true; });
+        const removed = cmsPhotoUrls(cmsContentSaved).filter(u => !stillUsed[u]);
         cmsContent = clean;
+        cmsContentSaved = JSON.parse(JSON.stringify(clean));
+        await cmsDeleteUnreferenced(removed);
         st.textContent = '\u2713 Published!';
         renderCmsTextTab();
         loadSiteContent();
-    } catch (e) { st.textContent = 'Error: ' + e.message; }
+    } catch (e) { st.textContent = 'Error: ' + cmsPlainError(e); }
 }
 
 /* ---------- settings tab ---------- */
-function cmsSavePat() {
-    localStorage.setItem('rrmg_github_pat', cmsById('cms-pat').value.trim());
-    cmsById('cms-settings-status').textContent = '\u2713 Token saved in this browser.';
-    cmsDataLoaded = false;
-    cmsDataLoading = false;
+async function cmsSavePat() {
+    const st = cmsById('cms-settings-status');
+    const tok = cmsById('cms-pat').value.trim();
+    if (!tok) { st.textContent = 'Paste your GitHub token first, then hit Connect.'; return; }
+    st.textContent = 'Testing the token...';
+    const v = await cmsTokenValid(tok);
+    if (!v.ok) {
+        st.textContent = 'Error: GitHub said ' + (v.status || 'no answer') + ' — that token does not work. Make sure it is a fine-grained token scoped to the redemptionroadmg-site repo with Contents: Read and write.';
+        return;
+    }
+    cmsToken = tok;
+    try { localStorage.setItem('rrmg_github_pat', tok); } catch (e) {}
+    st.textContent = 'Token works. Saving it behind your owner password...';
+    try {
+        await cmsVaultStore(tok);
+        cmsById('cms-pat').value = '';
+        cmsDataLoaded = false;
+        cmsSetConn('ok', '&#10003; Publishing is <b>connected</b> — changes you save here go live on the site for everyone.');
+        st.textContent = '\u2713 Connected! From now on your owner password alone turns publishing on — on this computer and any other.';
+        loadCmsData();
+    } catch (e) {
+        st.textContent = 'The token works in this browser, but saving it behind your password failed: ' + cmsPlainError(e);
+        cmsSetConn('ok', '&#10003; Publishing is <b>connected in this browser</b> — changes you save here go live on the site for everyone.');
+        loadCmsData();
+    }
 }
 async function cmsTestPat() {
     const st = cmsById('cms-settings-status');
+    const typed = cmsById('cms-pat').value.trim();
+    const tok = typed || cmsActiveToken();
+    if (!tok) { st.textContent = 'No token to test yet — paste one above.'; return; }
     st.textContent = 'Testing...';
-    try {
-        const r = await fetch(GH_API + '?ref=main', { headers: ghHeaders() });
-        if (!r.ok) throw new Error('GitHub said ' + r.status + ' — check the token and its repo permissions.');
-        st.textContent = '\u2713 Connected to the site repo!';
-    } catch (e) { st.textContent = 'Error: ' + e.message; }
+    const v = await cmsTokenValid(tok);
+    st.textContent = v.ok
+        ? '\u2713 That token connects to the site repo.'
+        : 'Error: GitHub said ' + (v.status || 'no answer') + ' — the token is expired, revoked, or not scoped to this repo.';
 }
 
         </script>
