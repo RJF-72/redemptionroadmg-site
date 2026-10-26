@@ -1069,16 +1069,20 @@
             <div id="adminProductList"></div></div>
         <div id="cms-tab-music" class="cms-tab">
             <h3 style="color:var(--gold-light);margin-bottom:0.5rem">&#127925; Jukebox Tracks</h3>
-            <p class="cms-hint">Add your songs below. Upload an MP3 or paste a link, then hit <b>Save Music to Site</b> to publish.</p>
+            <p class="cms-hint">Add your songs below. Pick or drag in several MP3s at once &mdash; check the titles &mdash; then hit <b>Add</b> and <b>Save Music to Site</b> to publish them all. One song works the same way, or paste a link instead of a file.</p>
             <div id="cmsTrackList" style="margin:1rem 0"></div>
-            <div class="cms-row">
-                <input type="text" id="cms-new-title" placeholder="Song title">
-                <input type="text" id="cms-new-artist" placeholder="Artist">
-            </div>
-            <div class="cms-row">
-                <input type="file" id="cms-new-file" accept="audio/*">
-                <input type="text" id="cms-new-url" placeholder="...or paste MP3 URL">
-                <button class="cms-mini" onclick="cmsAddTrack()">Add</button>
+            <div id="cms-music-drop">
+                <div class="cms-row">
+                    <input type="text" id="cms-new-title" placeholder="Song title (for a pasted link)">
+                    <input type="text" id="cms-new-artist" placeholder="Artist (fills in for every song)">
+                </div>
+                <div class="cms-row">
+                    <input type="file" id="cms-new-file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.aac,.flac" multiple onchange="cmsFilesPicked(this)">
+                    <input type="text" id="cms-new-url" placeholder="...or paste MP3 URL">
+                    <button class="cms-mini" onclick="cmsAddTrack()">Add</button>
+                </div>
+                <p class="cms-drop-hint">Tip: you can also drag MP3 files straight onto this box.</p>
+                <div id="cmsPendingList"></div>
             </div>
             <button class="cms-save" onclick="cmsSaveMusic()">Save Music to Site</button>
             <div class="cms-status" id="cms-music-status"></div>
@@ -1839,6 +1843,9 @@
         .cms-conn.ok{background:rgba(46,160,67,.14);border-color:#2ea043;color:#8fe3ab}
         .cms-conn.bad{background:rgba(200,60,60,.12);border-color:#a33;color:#f3a3a3}
         .cms-save[disabled]{opacity:.45;cursor:not-allowed}
+        #cms-music-drop{border:1px dashed rgba(212,168,83,.4);border-radius:8px;padding:10px;margin-bottom:4px}
+        #cms-music-drop.cms-drag{border-color:var(--gold);background:rgba(212,168,83,.08)}
+        .cms-drop-hint{color:var(--text-secondary);font-size:0.8rem;text-align:center;margin:2px 0 0}
         .playlist-item-art-fallback{width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--gold-glow);border:1px solid var(--border);border-radius:8px}
         </style>
         <script>
@@ -1970,6 +1977,8 @@ function cmsPlainError(e) {
     if (/\(404\)/.test(m)) return 'GitHub could not find the site repo for this token. The token must be scoped to the redemptionroadmg-site repo — reconnect it in the Settings tab.';
     if (/\(409\)|sha/i.test(m)) return 'The site content changed since this window loaded. Your change was re-applied against the newest version — if this keeps happening, close and reopen the dashboard.';
     if (/\(422\)/.test(m)) return 'GitHub rejected the update (422). Close the dashboard, reopen it, and try again.';
+    const up = m.match(/Upload failed \((\d+)\)/);
+    if (up) return 'the upload failed (GitHub answered ' + up[1] + '). Check the connection in the Settings tab and try again.';
     return m;
 }
 
@@ -2241,53 +2250,156 @@ function cmsTrackMove(i, d) {
 function cmsTrackDel(i) {
     if (confirm('Remove this track?')) { cmsTracks.splice(i, 1); renderCmsTracks(); }
 }
-function cmsAddTrack() {
-    const title = cmsById('cms-new-title').value.trim();
-    const artist = cmsById('cms-new-artist').value.trim();
-    const file = cmsById('cms-new-file').files[0];
-    const url = cmsById('cms-new-url').value.trim();
-    if (!title) { alert('Give the song a title first.'); return; }
-    if (!file && !url) { alert('Pick an MP3 file or paste a URL.'); return; }
-    if (file) {
-        try { cmsCheckFile(file); }
-        catch (e) { alert(e.message); return; }
+/* ---------- batch add: pick or drop several MP3s at once ---------- */
+let cmsPendingFiles = [];
+function cmsTitleFromFilename(name) {
+    let t = String(name || '').replace(/\.[a-z0-9]{2,5}$/i, '');
+    t = t.replace(/^\s*\d{1,3}[\s._\-)]+/, '').replace(/^\s*track\s*\d+\s*[\s._\-]*/i, '');
+    t = t.replace(/_+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (t && (t === t.toUpperCase() || t === t.toLowerCase())) {
+        t = t.toLowerCase().replace(/(^|[\s\-])([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
     }
-    cmsTracks.push({ title: title, artist: artist || 'Redemption Road', stream_url: url || '', _file: file || null });
+    return t || 'Untitled';
+}
+function cmsIsAudioFile(f) {
+    return /\.(mp3|m4a|wav|ogg|aac|flac)$/i.test(f.name || '') || String(f.type || '').indexOf('audio/') === 0;
+}
+function cmsQueueFiles(fileList) {
+    const shared = cmsById('cms-new-artist').value.trim();
+    let added = 0;
+    const notes = [];
+    for (const f of Array.from(fileList || [])) {
+        if (!cmsIsAudioFile(f)) { notes.push('"' + f.name + '" is not an audio file \u2014 skipped.'); continue; }
+        try { cmsCheckFile(f); }
+        catch (e) { notes.push(e.message + ' \u2014 skipped.'); continue; }
+        if (cmsPendingFiles.some(p => p.file.name === f.name && p.file.size === f.size)) { notes.push('"' + f.name + '" is already in the list \u2014 skipped.'); continue; }
+        cmsPendingFiles.push({ file: f, title: cmsTitleFromFilename(f.name), artist: shared });
+        added++;
+    }
+    renderCmsPending();
+    const st = cmsById('cms-music-status');
+    if (added) st.textContent = added + (added === 1 ? ' song' : ' songs') + ' ready below \u2014 check the titles, then hit "Add".' + (notes.length ? ' ' + notes.join(' ') : '');
+    else if (notes.length) st.textContent = notes.join(' ');
+}
+function cmsFilesPicked(input) {
+    const files = input.files;
+    input.value = '';
+    cmsQueueFiles(files);
+}
+function renderCmsPending() {
+    const box = cmsById('cmsPendingList');
+    if (!box) return;
+    if (!cmsPendingFiles.length) { box.innerHTML = ''; return; }
+    box.innerHTML = '<p class="cms-hint" style="margin:6px 0 2px"><b>' + cmsPendingFiles.length + (cmsPendingFiles.length === 1 ? ' new song' : ' new songs') + '</b> \u2014 fix any title, then hit <b>Add</b> above:</p>' +
+        cmsPendingFiles.map((p, i) =>
+            '<div class="cms-row">' +
+            '<span style="color:var(--gold);font-weight:700;min-width:20px">+</span>' +
+            '<input type="text" placeholder="Song title" value="' + escapeHtml(p.title) + '" data-i="' + i + '" data-f="title" onchange="cmsPendingEdit(this)">' +
+            '<input type="text" placeholder="Artist" value="' + escapeHtml(p.artist) + '" data-i="' + i + '" data-f="artist" onchange="cmsPendingEdit(this)">' +
+            '<span class="cms-hint" style="margin:0">' + escapeHtml(p.file.name) + '</span>' +
+            '<button class="cms-mini danger" onclick="cmsPendingDel(' + i + ')">&#128465;</button>' +
+            '</div>'
+        ).join('');
+}
+function cmsPendingEdit(el) { cmsPendingFiles[+el.dataset.i][el.dataset.f] = el.value; }
+function cmsPendingDel(i) { cmsPendingFiles.splice(i, 1); renderCmsPending(); }
+(function cmsInitMusicDrop() {
+    const dz = cmsById('cms-music-drop');
+    if (!dz || !dz.addEventListener) return;
+    ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('cms-drag'); }));
+    ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('cms-drag'); }));
+    dz.addEventListener('drop', e => { if (e.dataTransfer) cmsQueueFiles(e.dataTransfer.files); });
+})();
+
+function cmsAddTrack() {
+    const url = cmsById('cms-new-url').value.trim();
+    if (!cmsPendingFiles.length && !url) {
+        /* Fallback if the change event somehow did not queue the picker. */
+        const f = cmsById('cms-new-file').files[0];
+        if (f) cmsQueueFiles([f]);
+    }
+    if (!cmsPendingFiles.length && !url) { alert('Pick one or more MP3 files, or paste a URL.'); return; }
+    let added = 0;
+    for (const p of cmsPendingFiles) {
+        cmsTracks.push({ title: p.title.trim() || cmsTitleFromFilename(p.file.name), artist: p.artist.trim() || 'Redemption Road', stream_url: '', _file: p.file });
+        added++;
+    }
+    cmsPendingFiles = [];
+    renderCmsPending();
+    if (url) {
+        const titleField = cmsById('cms-new-title').value.trim();
+        const urlName = url.split('/').pop().split('?')[0];
+        let guessed = '';
+        try { guessed = cmsTitleFromFilename(decodeURIComponent(urlName)); } catch (e) { guessed = cmsTitleFromFilename(urlName); }
+        cmsTracks.push({ title: titleField || guessed, artist: cmsById('cms-new-artist').value.trim() || 'Redemption Road', stream_url: url, _file: null });
+        added++;
+    }
     cmsById('cms-new-title').value = '';
-    cmsById('cms-new-artist').value = '';
-    cmsById('cms-new-file').value = '';
     cmsById('cms-new-url').value = '';
     renderCmsTracks();
-    cmsById('cms-music-status').textContent = 'Track added — hit "Save Music to Site" to publish.';
+    cmsById('cms-music-status').textContent = (added === 1 ? 'Track added' : added + ' tracks added') + ' \u2014 hit "Save Music to Site" to publish.';
 }
+let cmsMusicSaving = false;
 async function cmsSaveMusic() {
     const st = cmsById('cms-music-status');
-    if (!cmsConnected) { st.textContent = 'Publishing is not connected — see the note at the top of this window (Settings tab connects it).'; return; }
+    if (!cmsConnected) { st.textContent = 'Publishing is not connected \u2014 see the note at the top of this window (Settings tab connects it).'; return; }
+    if (cmsMusicSaving) return;
+    cmsMusicSaving = true;
+    const btn = document.querySelector ? document.querySelector('#cms-tab-music .cms-save') : null;
+    if (btn) btn.disabled = true;
     try {
-        // Upload every new file first; only then publish the playlist, so a
-        // failed upload never leaves a half-saved playlist behind.
-        for (const t of cmsTracks) {
-            if (t._file) {
-                st.textContent = 'Uploading ' + t._file.name + '...';
-                if (cmsCheckFile(t._file)) st.textContent = 'Uploading ' + t._file.name + ' (large file — this can take a minute)...';
+        // Upload every new file first; only then publish the playlist ONCE,
+        // so a failed upload never leaves a half-saved playlist behind. One
+        // bad file no longer stops the batch: the rest still publish, the
+        // failed song stays in the list with its file attached (fix it and
+        // hit Save again), and each failure is reported in plain words.
+        const fileTracks = cmsTracks.filter(t => t._file);
+        const failures = [];
+        const failedTracks = new Set();
+        for (let i = 0; i < fileTracks.length; i++) {
+            const t = fileTracks[i];
+            const big = t._file.size > CMS_WARN_FILE;
+            st.textContent = 'Saving ' + (i + 1) + ' of ' + fileTracks.length + ' \u2014 ' + t._file.name + (big ? ' (large file \u2014 this can take a minute)' : '') + '...';
+            try {
                 t.stream_url = await ghUpload('audio', t._file);
                 delete t._file;
+            } catch (e) {
+                failures.push('"' + t.title + '" \u2014 ' + cmsPlainError(e));
+                failedTracks.add(t);
             }
-            if (!t.stream_url) throw new Error('"' + t.title + '" has no audio file or URL.');
+        }
+        const publishable = [];
+        for (const t of cmsTracks) {
+            if (failedTracks.has(t)) continue;
+            if (!t.stream_url) {
+                failures.push('"' + t.title + '" has no audio file or URL.');
+                failedTracks.add(t);
+                continue;
+            }
+            publishable.push(t);
         }
         st.textContent = 'Publishing playlist...';
-        const clean = cmsTracks.map(t => ({ title: t.title, artist: t.artist, stream_url: t.stream_url }));
+        const clean = publishable.map(t => ({ title: t.title, artist: t.artist, stream_url: t.stream_url }));
         await ghWriteJsonFresh('content/playlist.json', clean, 'Owner dashboard: update playlist');
         const stillUsed = {};
         clean.forEach(t => { stillUsed[t.stream_url] = true; });
         const removed = cmsTracksSaved.map(t => t.stream_url).filter(u => u && !stillUsed[u]);
-        cmsTracks = clean;
         cmsTracksSaved = JSON.parse(JSON.stringify(clean));
         renderCmsTracks();
         await cmsDeleteUnreferenced(removed);
-        st.textContent = '\u2713 Music published! It appears on the site in about a minute.';
+        if (failures.length) {
+            st.textContent = clean.length + (clean.length === 1 ? ' song' : ' songs') + ' published. ' + failures.length + (failures.length === 1 ? ' song' : ' songs') + ' did not save and ' + (failures.length === 1 ? 'is' : 'are') + ' still in the list above \u2014 fix and hit Save again: ' + failures.join(' ');
+        } else if (fileTracks.length > 1) {
+            st.textContent = '\u2713 Music published! ' + fileTracks.length + ' new songs are on the site in about a minute.';
+        } else {
+            st.textContent = '\u2713 Music published! It appears on the site in about a minute.';
+        }
         if (typeof fetchPlaylist === 'function') fetchPlaylist();
     } catch (e) { st.textContent = 'Error: ' + cmsPlainError(e); }
+    finally {
+        cmsMusicSaving = false;
+        if (btn) btn.disabled = !cmsConnected;
+    }
 }
 
 /* ---------- photos tab ---------- */
