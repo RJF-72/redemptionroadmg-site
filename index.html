@@ -1157,8 +1157,6 @@
                 <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;text-align:center">Purchase from one of our authorized stores:</p>
                 <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
                     <a id="storePayhip" href="#" target="_blank" class="store-btn-co">Payhip</a>
-                    <a id="storeGumroad" href="#" target="_blank" class="store-btn-co">Gumroad</a>
-                    <a id="storeLemonSqueezy" href="#" target="_blank" class="store-btn-co">LemonSqueezy</a>
                 </div>
 
                 <div style="text-align:center;margin:16px 0;color:var(--text-muted);font-size:0.8rem">&mdash; or &mdash;</div>
@@ -1365,13 +1363,11 @@
                         icon: "🎤",
                         type: "artist",
                         streaming: {
-                            spotify: "https://open.spotify.com/artist/",
-                            appleMusic: "https://music.apple.com/artist/",
-                            youtube: "https://youtube.com/@",
-                            amazonMusic: "https://music.amazon.com/artists/"
+                            spotify: "https://open.spotify.com/artist/4O1lNjzo4EZfHZLVz7tEFk",
+                            appleMusic: "https://music.apple.com/us/artist/ray-flanary/1861324128"
                         },
                         catalog: [
-                            { title: "Redemption Road", type: "Single", url: "https://open.spotify.com/track/" }
+                            { title: "Redemption Road", type: "Single", url: "https://open.spotify.com/artist/4O1lNjzo4EZfHZLVz7tEFk" }
                         ]
                     },
                     {
@@ -1380,15 +1376,7 @@
                         description: "Artist & Producer • Redemption Road Music Group",
                         icon: "🎹",
                         type: "artist",
-                        streaming: {
-                            spotify: "https://open.spotify.com/artist/",
-                            appleMusic: "https://music.apple.com/artist/",
-                            youtube: "https://youtube.com/@",
-                            amazonMusic: "https://music.amazon.com/artists/"
-                        },
-                        catalog: [
-                            { title: "Coming Soon", type: "Single", url: "#" }
-                        ]
+                        catalog: []
                     },
                     {
                         id: "artist_paige_sproles",
@@ -1397,13 +1385,11 @@
                         icon: "🎸",
                         type: "artist",
                         streaming: {
-                            spotify: "https://open.spotify.com/artist/",
-                            appleMusic: "https://music.apple.com/artist/",
-                            youtube: "https://youtube.com/@",
-                            amazonMusic: "https://music.amazon.com/artists/"
+                            spotify: "https://open.spotify.com/artist/6KV3WA4UKYi0BYFtQEnK9V"
                         },
                         catalog: [
-                            { title: "Coming Soon", type: "Single", url: "#" }
+                            { title: "Midnight Cowboy", type: "Single", url: "https://open.spotify.com/album/68X21ZaUbDIEJHh6WnV6pW" },
+                            { title: "Heading Back To Luckenbach", type: "Single", url: "https://open.spotify.com/artist/6KV3WA4UKYi0BYFtQEnK9V" }
                         ]
                     }
                 ]
@@ -1569,20 +1555,14 @@
             // Set store URLs based on brand or product-specific override
             const storeMap = {
                 'grace-grit': {
-                    payhip: 'https://payhip.com/Texican',
-                    gumroad: 'https://gumroad.com/texican',
-                    lemonsqueezy: 'https://texican.lemonsqueezy.com'
+                    payhip: 'https://store.redemptionroadmg.com'
                 },
                 'neon-church': {
-                    payhip: 'https://payhip.com/Texican',
-                    gumroad: 'https://gumroad.com/texican',
-                    lemonsqueezy: 'https://texican.lemonsqueezy.com'
+                    payhip: 'https://store.redemptionroadmg.com'
                 }
             };
             const stores = storeMap[brandId] || storeMap['grace-grit'];
             document.getElementById('storePayhip').href = product.payhipUrl || stores.payhip;
-            document.getElementById('storeGumroad').href = product.gumroadUrl || stores.gumroad;
-            document.getElementById('storeLemonSqueezy').href = product.lemonsqueezyUrl || stores.lemonsqueezy;
 
             renderLicenseHistory();
             document.getElementById('checkoutModal').style.display = 'block';
