@@ -893,7 +893,6 @@
             <li><a href="#roster">Artists</a></li>
             <li><a href="#player">Jukebox</a></li>
             <li><a href="https://store.redemptionroadmg.com">Store</a></li>
-            <li><a href="#" onclick="openAdminLogin(); return false;" style="color: var(--gold);">Owner Login</a></li>
         </ul>
     </nav>
 
@@ -1693,6 +1692,10 @@
 
         function openAdminLogin() {
             document.getElementById('adminLoginModal').style.display = 'block';
+
+        // Discreet owner access: there is no public login link.
+        // The owner opens redemptionroadmg.com/#owner to bring up this login.
+        if (window.location.hash === '#owner') { openAdminLogin(); }
             document.getElementById('adminPasswordInput').value = '';
             document.getElementById('adminLoginError').style.display = 'none';
         }
